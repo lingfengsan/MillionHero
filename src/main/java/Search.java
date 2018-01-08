@@ -3,15 +3,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.concurrent.Callable;
 
 /**
  * Created by 618 on 2018/1/8.
  */
-public class Search {
-    public long search(String question, String answer) throws IOException {
+public class Search implements Callable {
+    private final String question;
+    public Search(String question){
+        this.question=question;
+    }
+    public long search(String question) throws IOException {
         StringBuilder sb = new StringBuilder();
         String path = "http://www.baidu.com/s?tn=ichuner&lm=-1&word=" +
-                URLEncoder.encode(question + " " + answer, "gb2312") + "&rn=1";
+                URLEncoder.encode(question , "gb2312") + "&rn=1";
         URL url = new URL(path);
         BufferedReader breader = new BufferedReader(new InputStreamReader(url.openStream()));
         String line = null;
@@ -28,13 +33,13 @@ public class Search {
         line=line.replace(",","");
         return Long.valueOf(line);
     }
+    public static void main(String[] args) throws Exception {
+        Search search = new Search("阿尔茨海默症又被称为什么?");
+        System.out.println(search.call());
+    }
 
-    public static void main(String[] args) throws IOException {
-        Search search = new Search();
-        String question = "阿尔茨海默症又被称为什么?";
-        String[] ans = new String[]{"老年痴呆症", "癫痫症", "小儿麻痹症"};
-        for (String an : ans) {
-            System.out.println(search.search(question, an));
-        }
+    @Override
+    public Long call() throws Exception {
+        return search(question);
     }
 }

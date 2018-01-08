@@ -1,7 +1,7 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Scanner;
+import java.util.concurrent.FutureTask;
 
 /**
  * Created by 618 on 2018/1/8.
@@ -19,8 +19,9 @@ public class Main {
 
         }
     }
-    public static void run() throws IOException {
-        long startTime=System.currentTimeMillis();//记录开始时间
+    private static void run() throws Exception {
+//        记录开始时间
+        long startTime=System.currentTimeMillis();
         //获取图片
         File image=new Phone().getImage();
         System.out.println("获取图片成功"+image.getAbsolutePath());
@@ -37,11 +38,48 @@ public class Main {
             System.out.println(answer);
         }
         //搜索
-        Search search=new Search();
+        long countQuestion;
+        long[] countQA=new long[3];
+        long[] countAnswer=new long[3];
+
+        int maxIndex=0;
+
+        Search[] searchQA=new Search[3];
+        Search[] searchAnswers=new Search[3];
+        FutureTask<Long>[] futureQA=new FutureTask[3];
+        FutureTask<Long>[] futureAnswers=new FutureTask[3];
+        FutureTask<Long> futureQuestion=new FutureTask<Long>(new Search(question));
+        new Thread(futureQuestion).start();
         for (int i = 0; i < 3; i++) {
-            System.out.println(answers[i]+search.search(question,answers[i]));
+            searchQA[i]=new Search(question+" "+answers[i]);
+            searchAnswers[i]=new Search(answers[i]);
+            futureQA[i]=new FutureTask<Long>(searchQA[i]);
+            futureAnswers[i]=new FutureTask<Long>(searchAnswers[i]);
+            new Thread(futureQA[i]).start();
+            new Thread(futureAnswers[i]).start();
         }
-        long endTime=System.currentTimeMillis();//记录结束时间
+        countQuestion=futureQuestion.get();
+        for (int i = 0; i < 3; i++) {
+            countQA[i]=futureQA[i].get();
+            countAnswer[i]=futureAnswers[i].get();
+            maxIndex=(countQA[maxIndex]<countQA[i])?i:maxIndex;
+        }
+        /*单线程版本*/
+//        countQuestion=new Search(question).call();
+//        for (int i = 0; i < 3; i++) {
+//            countQA[i]=new Search(question+" "+answers[i]).call();
+//            countAnswer[i]=new Search(answers[i]).call();
+//        }
+//
+        float[] ans=new float[3];
+        for (int i = 0; i < 3; i++) {
+            ans[i]=countQA[i] / (countQuestion*countAnswer[i]);
+            maxIndex=(ans[maxIndex]<ans[i])?i:maxIndex;
+        }
+        System.out.println("--------最终结果-------");
+        System.out.println(answers[maxIndex]);
+//      记录结束时间
+        long endTime=System.currentTimeMillis();
         float excTime=(float)(endTime-startTime)/1000;
 
         System.out.println("执行时间："+excTime+"s");
