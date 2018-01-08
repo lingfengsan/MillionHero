@@ -7,7 +7,7 @@
     <groupId>me.lingfengsan</groupId>
     <artifactId>hero</artifactId>
     <version>1.0-SNAPSHOT</version>
-<dependencies>
+    <dependencies>
     <dependency>
         <groupId>net.sourceforge.tess4j</groupId>
         <artifactId>tess4j</artifactId>
