@@ -7,6 +7,7 @@ import java.util.Date;
  * Created by 618 on 2018/1/8.
  */
 public class Phone {
+    //此处应更改为自己的adb目录
     static final String ADB_PATH = "D:\\software\\Android\\android-sdk\\platform-tools\\adb";
     static final String HERO_PATH = Phone.class.getResource("/").getPath();
     public File getImage(){
@@ -20,11 +21,11 @@ public class Phone {
         try {
             Runtime.getRuntime().exec(ADB_PATH
                     + " shell /system/bin/screencap -p /sdcard/screenshot.png");
-            Thread.sleep(1000);
+            Thread.sleep(800);
             //将截图放在电脑本地
             Runtime.getRuntime().exec(ADB_PATH
                     + " pull /sdcard/screenshot.png " + curPhoto.getAbsolutePath());
-            Thread.sleep(500);
+            Thread.sleep(300);
             //返回当前图片名字
             return curPhoto;
         } catch (IOException e) {
