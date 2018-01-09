@@ -1,27 +1,29 @@
 /**
  * Created by 618 on 2018/1/8.
+ * @author lingfengsan
  */
 public class Information {
     private String question;
     private String[] ans;
 
-    public Information(String str) {
+    Information(String str) {
         //先去除空行
         str = str.replaceAll("((\r\n)|\n)[\\s\t ]*(\\1)+", "$1").
                 replaceAll("^((\r\n)|\n)", "");
         str=str.replace('.',' ').replace(" ","");
         int begin=(str.charAt(1)>='0'&& str.charAt(1)<=9)?2:1;
         question = str.trim().substring(begin, str.indexOf('?') + 1);
+        question = question.replaceAll("((\r\n)|\n)", "");
         System.out.println(question);
         String remain = str.substring(str.indexOf("?") + 1);
         ans = remain.trim().split("\n");
     }
 
-    public String getQuestion() {
+    String getQuestion() {
         return question;
     }
 
-    public String[] getAns() {
+    String[] getAns() {
         return ans;
     }
 

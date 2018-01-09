@@ -8,9 +8,10 @@ import java.io.File;
 
 /**
  * Created by 618 on 2018/1/8.
+ * @author lingfengsan
  */
 public class TessOCR {
-    public String getOCR(File imageFile){
+    String getOCR(File imageFile){
         ITesseract instance = new Tesseract();
         File tessDataFolder = LoadLibs.extractTessResources("tessdata");
         instance.setLanguage("chi_sim");
@@ -19,9 +20,8 @@ public class TessOCR {
         System.out.println(tessDataFolder.getAbsolutePath());
         try {
             Rectangle rectangle = new Rectangle(100, 300, 900, 900);
-            String result = instance.doOCR(imageFile,rectangle)
+            return instance.doOCR(imageFile,rectangle)
                     .replace(" ",".").replace(",","");
-            return result;
         } catch (TesseractException e) {
             System.err.println("提取文字失败："+e.getMessage());
         }
