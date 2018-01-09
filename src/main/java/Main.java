@@ -67,15 +67,12 @@ public class Main {
             new Thread(futureAnswers[i]).start();
         }
         try {
-            while (!futureQuestion.isDone()) {
-            }
+            while (!futureQuestion.isDone()) {}
             countQuestion = futureQuestion.get();
             for (int i = 0; i < NUM_OF_ANSWERS; i++) {
-                while (!futureQA[i].isDone()) {
-                }
+                while (!futureQA[i].isDone()) {}
                 countQA[i] = futureQA[i].get();
-                while (!futureAnswers[i].isDone()) {
-                }
+                while (!futureAnswers[i].isDone()) {}
                 countAnswer[i] = futureAnswers[i].get();
             }
         } catch (InterruptedException e) {
