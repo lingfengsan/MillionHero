@@ -17,7 +17,6 @@ public class Search implements Callable {
     }
 
     private Long search(String question) throws IOException {
-        System.out.println("que:" + question);
         String path = "http://www.baidu.com/s?tn=ichuner&lm=-1&word=" +
                 URLEncoder.encode(question, "gb2312") + "&rn=1";
         boolean findIt = false;
@@ -31,7 +30,6 @@ public class Search implements Callable {
                     int start = line.indexOf("百度为您找到相关结果约") + 11;
 
                     line = line.substring(start);
-                    System.out.println(line);
                     int end = line.indexOf("个");
                     line = line.substring(0, end);
                     break;
@@ -41,7 +39,6 @@ public class Search implements Callable {
         }
         line = line.replace(",", "");
         Long result=Long.valueOf(line);
-        System.out.println("que："+result);
         return result;
     }
 

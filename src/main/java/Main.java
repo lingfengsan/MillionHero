@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -11,10 +12,10 @@ import java.util.concurrent.FutureTask;
  */
 public class Main {
     private static final int NUM_OF_ANSWERS = 3;
+    private static final String QUESTION_FLAG="?";
 
     public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        while (sc.nextInt() == 1) {
+        while (true) {
             try {
                 run();
             } catch (Exception e) {
@@ -24,7 +25,7 @@ public class Main {
         }
     }
 
-    private static void run() {
+    private static void run() throws InterruptedException {
 //       记录开始时间
         long startTime;
 //       记录结束时间
@@ -35,8 +36,12 @@ public class Main {
         System.out.println("获取图片成功" + image.getAbsolutePath());
         //图像识别
         String questionAndAnswers = new TessOCR().getOCR(image);
-        System.out.println("识别成功 = [" + questionAndAnswers + "]");
+        System.out.println("识别成功");
+        if(!questionAndAnswers.contains(QUESTION_FLAG)){
+            return;
+        }
         //获取问题和答案
+        System.out.println("检测到题目");
         Information information = new Information(questionAndAnswers);
         String question = information.getQuestion();
         String[] answers = information.getAns();
@@ -82,14 +87,43 @@ public class Main {
         }
         float[] ans = new float[NUM_OF_ANSWERS];
         for (int i = 0; i < NUM_OF_ANSWERS; i++) {
-            ans[i] = countQA[i] / (countQuestion * countAnswer[i]);
-            maxIndex = (ans[maxIndex] < ans[i]) ? i : maxIndex;
+            ans[i] = (float)countQA[i] / (float)(countQuestion * countAnswer[i]);
+            maxIndex = (ans[i]>ans[maxIndex] ) ? i : maxIndex;
         }
+        //根据pmi值进行打印搜索结果
+        int[] rank=rank(ans);
+        for (int i : rank) {
+            System.out.print(answers[i]);
+            System.out.print(" countQA:"+countQA[i]);
+            System.out.print(" countAnswer:"+countAnswer[i]);
+            System.out.println(" ans:"+ans[i]);
+        }
+
         System.out.println("--------最终结果-------");
         System.out.println(answers[maxIndex]);
         endTime = System.currentTimeMillis();
         float excTime = (float) (endTime - startTime) / 1000;
 
         System.out.println("执行时间：" + excTime + "s");
+        Thread.sleep(10000);
+    }
+
+    /**
+     *
+     * @param floats pmi值
+     * @return 返回排序的rank
+     */
+    private static int[] rank(float[] floats){
+        int[] rank=new int[NUM_OF_ANSWERS];
+        float[] f=Arrays.copyOf(floats,3);
+        Arrays.sort(f);
+        for (int i = 0; i < NUM_OF_ANSWERS; i++) {
+            for (int j = 0; j < NUM_OF_ANSWERS; j++) {
+                if(f[i]==floats[j]){
+                    rank[i]=j;
+                }
+            }
+        }
+        return rank;
     }
 }

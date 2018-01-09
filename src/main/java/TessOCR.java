@@ -17,7 +17,6 @@ public class TessOCR {
         instance.setLanguage("chi_sim");
         //Set the tessdata path
         instance.setDatapath(tessDataFolder.getAbsolutePath());
-        System.out.println(tessDataFolder.getAbsolutePath());
         try {
             Rectangle rectangle = new Rectangle(100, 300, 900, 900);
             return instance.doOCR(imageFile,rectangle)
