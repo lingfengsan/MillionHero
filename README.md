@@ -1,7 +1,7 @@
 知乎连接：https://zhuanlan.zhihu.com/p/32754893
 
 #Update
-
+*  2018-01-10 ：B站视频https://www.bilibili.com/video/av18152515/
 *  2018-01-10 : 一直读取图片的话会报异常，现在改为输入回车才回开始。更加稳定
              尝试了一下午汉王的OCR，识别率还是比较低啊。
              但是tessOCR运行时间确实有点长了。有好的OCR推荐下
