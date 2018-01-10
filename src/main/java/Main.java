@@ -44,6 +44,8 @@ public class Main {
         //图像识别
         Long beginOfDectect=System.currentTimeMillis();
         String questionAndAnswers = new TessOCR().getOCR(image);
+        if (image != null)
+            image.delete();
         System.out.println("识别成功");
         System.out.println("识别时间："+(System.currentTimeMillis()-beginOfDectect));
         if(!questionAndAnswers.contains(QUESTION_FLAG)){
