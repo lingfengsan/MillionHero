@@ -1,5 +1,7 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
@@ -15,9 +17,14 @@ public class Main {
     private static final String QUESTION_FLAG="?";
 
     public static void main(String[] args) throws IOException {
+        BufferedReader bf=new BufferedReader(new InputStreamReader(System.in));
+
         while (true) {
+            String str=bf.readLine();
             try {
-                run();
+                if(str.length()==0){
+                    run();
+                }
             } catch (Exception e) {
                 System.out.println("error");
             }
@@ -35,8 +42,10 @@ public class Main {
         File image = new Phone().getImage();
         System.out.println("获取图片成功" + image.getAbsolutePath());
         //图像识别
+        Long beginOfDectect=System.currentTimeMillis();
         String questionAndAnswers = new TessOCR().getOCR(image);
         System.out.println("识别成功");
+        System.out.println("识别时间："+(System.currentTimeMillis()-beginOfDectect));
         if(!questionAndAnswers.contains(QUESTION_FLAG)){
             return;
         }
@@ -105,7 +114,6 @@ public class Main {
         float excTime = (float) (endTime - startTime) / 1000;
 
         System.out.println("执行时间：" + excTime + "s");
-        Thread.sleep(10000);
     }
 
     /**
