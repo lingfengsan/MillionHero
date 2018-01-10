@@ -15,8 +15,7 @@ public class Search implements Callable {
     Search(String question) {
         this.question = question;
     }
-
-    private Long search(String question) throws IOException {
+    Long search(String question) throws IOException {
         String path = "http://www.baidu.com/s?tn=ichuner&lm=-1&word=" +
                 URLEncoder.encode(question, "gb2312") + "&rn=1";
         boolean findIt = false;
@@ -38,8 +37,7 @@ public class Search implements Callable {
             }
         }
         line = line.replace(",", "");
-        Long result=Long.valueOf(line);
-        return result;
+        return Long.valueOf(line);
     }
 
     public static void main(String[] args) throws Exception {

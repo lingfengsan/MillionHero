@@ -13,7 +13,7 @@ public class Phone {
      * 此处应更改为自己的adb目录
      */
     private static final String ADB_PATH = "D:\\software\\Android\\android-sdk\\platform-tools\\adb";
-    private static final String HERO_PATH = Phone.class.getResource("/").getPath();
+    private static final String HERO_PATH = "D:\\Photo";
 
     File getImage() {
         //获取当前时间作为名字

@@ -70,7 +70,7 @@ public class Main {
         Search[] searchAnswers = new Search[3];
         FutureTask<Long>[] futureQA = new FutureTask[NUM_OF_ANSWERS];
         FutureTask<Long>[] futureAnswers = new FutureTask[NUM_OF_ANSWERS];
-        FutureTask<Long> futureQuestion = new FutureTask<Long>(new Search(question));
+        FutureTask<Long> futureQuestion = new FutureTask<Long>(new SearchAndOpen(question));
         new Thread(futureQuestion).start();
         for (int i = 0; i < NUM_OF_ANSWERS; i++) {
             searchQA[i] = new Search(question + " " + answers[i]);
