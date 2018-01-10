@@ -37,8 +37,8 @@
    3. 答案 count(a)；
 6. 计算匹配值pmi: pmi[i]=count(q&a[i])/(count(q)*count(a[i]))
 7. 选择pmi值最高的为答案。
-#使用步骤
 
+>#使用步骤
 1. 安卓手机打开USB调试，设置》开发者选项》USB调试
 2. 电脑与手机USB线连接，确保执行adb devices可以找到设备id
 3. 打开百万直播
