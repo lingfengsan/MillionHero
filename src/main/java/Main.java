@@ -1,8 +1,14 @@
+import exception.CorrectAnswerException;
+import exception.NoBeginExcetpion;
+
+import javax.swing.text.DateFormatter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -59,7 +65,7 @@ public class Main {
      * @author Doodlister
      * @throws InterruptedException
      */
-    private static void cddhRun() {
+    private static void cddhRun() throws InterruptedException {
 //       记录开始时间
         long startTime;
 //       记录结束时间
@@ -67,8 +73,22 @@ public class Main {
         startTime = System.currentTimeMillis();
 
         //获取问题和答案
+
+        Information information = null;
+        try {
+            information = CDDHGetQuestion.getQuestionInformation();
+        } catch (NoBeginExcetpion noBeginExcetpion) {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println(df.format(new Date())+"--答题尚未开始");
+            Thread.sleep(1000);
+            return;
+        }catch (CorrectAnswerException correctAnswerException){
+            System.out.println("-----------------正确答案公布-------------------");
+            System.out.println(correctAnswerException.getMessage());
+            Thread.sleep(5000);
+            return;
+        }
         System.out.println("检测到题目");
-        Information information = CDDHGetQuestion.getQuestionInformation();
         String question = information.getQuestion();
         String[] answers = information.getAns();
         System.out.println("问题:" + question);
