@@ -25,7 +25,18 @@ public class Main {
 
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("请选择您要进入的游戏\n1.百万英雄\n2.冲顶大会");
-        String selection = bf.readLine();
+        String selection;
+        while(true){
+            selection = bf.readLine();
+            if("1".equals(selection)){
+                System.out.println("----------------进入百万英雄模式----------------");
+                break;
+            }else if("2".equals(selection)){
+                System.out.println("----------------进入冲顶大会模式----------------");
+                break;
+            }
+        }
+
         while (true) {
             String str = bf.readLine();
             if("exit".equals(str)){
@@ -34,10 +45,8 @@ public class Main {
             }else{
                 if (str.length() == 0) {
                     if("1".equals(selection)){
-                        System.out.println("----------------进入百万英雄模式----------------");
                         run();
                     }else if("2".equals(selection)){
-                        System.out.println("----------------进入冲顶大会模式----------------");
                         cddhRun();
                     }
                 }

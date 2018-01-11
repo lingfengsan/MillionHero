@@ -5,7 +5,7 @@ import entity.cddh.Data;
 import entity.cddh.Event;
 import exception.CorrectAnswerException;
 import exception.NoBeginExcetpion;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import utils.Utils;
 
 
