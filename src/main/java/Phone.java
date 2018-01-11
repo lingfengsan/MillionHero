@@ -10,10 +10,12 @@ import java.util.Date;
  */
 public class Phone {
     /**
-     * 此处应更改为自己的adb目录
+     * ABD_PATH此处应更改为自己的adb目录
+     * HERO_PATH更改自己存放图片的地址
      */
     private static final String ADB_PATH = "D:\\software\\Android\\android-sdk\\platform-tools\\adb";
     private static final String HERO_PATH = "D:\\Photo";
+    private static final Long MIN_IMAGE_SIZE=1000L;
 
     File getImage() {
         //获取当前时间作为名字
@@ -23,7 +25,7 @@ public class Phone {
         File curPhoto = new File(HERO_PATH, curDate + ".png");
         //截屏存到手机本地
         try {
-            while(!curPhoto.exists()) {
+            while(!curPhoto.exists() || curPhoto.length()<MIN_IMAGE_SIZE) {
                 Process process = Runtime.getRuntime().exec(ADB_PATH
                         + " shell /system/bin/screencap -p /sdcard/screenshot.png");
                 process.waitFor();
