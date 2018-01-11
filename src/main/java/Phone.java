@@ -26,13 +26,13 @@ public class Phone {
         //截屏存到手机本地
         try {
             while(!curPhoto.exists() || curPhoto.length()<MIN_IMAGE_SIZE) {
-                Runtime.getRuntime().exec(ADB_PATH
+                Process process = Runtime.getRuntime().exec(ADB_PATH
                         + " shell /system/bin/screencap -p /sdcard/screenshot.png");
-                Thread.sleep(700);
+                process.waitFor();
                 //将截图放在电脑本地
-                Runtime.getRuntime().exec(ADB_PATH
+                process = Runtime.getRuntime().exec(ADB_PATH
                         + " pull /sdcard/screenshot.png " + curPhoto.getAbsolutePath());
-                Thread.sleep(200);
+                process.waitFor();
             }
             //返回当前图片名字
             return curPhoto;
