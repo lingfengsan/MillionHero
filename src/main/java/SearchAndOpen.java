@@ -1,9 +1,11 @@
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.concurrent.Callable;
@@ -35,6 +37,10 @@ public class SearchAndOpen implements Callable {
             } else if (osName.startsWith("Windows")) {
                 //windows的打开方式。
                 Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + path);
+            } else if (osName.startsWith("Linux")) {
+                //Linux的打开方式
+                Desktop desktop = Desktop.getDesktop();
+                desktop.browse(URI.create(path));
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

@@ -19,42 +19,29 @@ import java.util.concurrent.FutureTask;
  * @author lingfengsan
  */
 public class Main {
-    private static final int NUM_OF_ANSWERS = 3;
-    private static final String QUESTION_FLAG="?";
+    private static final String QUESTION_FLAG = "?";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)  throws IOException{
 
-        while(true){
-            Scanner scan = new Scanner(System.in);
-            System.out.println("请选择您要进入的游戏\n1.百万英雄\n2.冲顶大会");
-            switch (scan.nextInt()){
-                case 1:
-                    System.out.println("----------------进入百万英雄模式----------------");
-                    BufferedReader bf=new BufferedReader(new InputStreamReader(System.in));
-                    while (true) {
-                        String str=bf.readLine();
-                        System.out.println("开始执行");
-                        try {
-                            if(str.length()==0){
-                                run();
-                            }
-                        } catch (Exception e) {
-                            System.out.println("error");
-                        }
+
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("请选择您要进入的游戏\n1.百万英雄\n2.冲顶大会");
+        String selection = bf.readLine();
+        while (true) {
+            String str = bf.readLine();
+            if("exit".equals(str)){
+                System.out.println("ヾ(￣▽￣)Bye~Bye~");
+                break;
+            }else{
+                if (str.length() == 0) {
+                    if("1".equals(selection)){
+                        System.out.println("----------------进入百万英雄模式----------------");
+                        run();
+                    }else if("2".equals(selection)){
+                        System.out.println("----------------进入冲顶大会模式----------------");
+                        cddhRun();
                     }
-                case 2:
-                    System.out.println("----------------进入冲顶大会模式----------------");
-                    while (true) {
-
-                        try {
-                            cddhRun();
-                        } catch (Exception e) {
-                            System.out.println("error");
-                        }
-                    }
-                default:
-                    System.out.println("输入有误请重新输入");
-                    break;
+                }
             }
         }
 
@@ -66,9 +53,9 @@ public class Main {
      * @throws InterruptedException
      */
     private static void cddhRun() throws InterruptedException {
-//       记录开始时间
+        //       记录开始时间
         long startTime;
-//       记录结束时间
+        //       记录结束时间
         long endTime;
         startTime = System.currentTimeMillis();
 
@@ -150,23 +137,25 @@ public class Main {
         endTime = System.currentTimeMillis();
         float excTime = (float) (endTime - startTime) / 1000;
 
+
         System.out.println("执行时间：" + excTime + "s");
     }
-    private static void run() throws InterruptedException {
-//       记录开始时间
+    private static void run() {
+        //       记录开始时间
         long startTime;
-//       记录结束时间
+        //       记录结束时间
         long endTime;
         startTime = System.currentTimeMillis();
         //获取图片
         File image = new Phone().getImage();
-        System.out.println("获取图片成功" + image.getAbsolutePath());
+        System.out.println("图片获取成功");
         //图像识别
-        Long beginOfDectect=System.currentTimeMillis();
+        Long beginOfDetect = System.currentTimeMillis();
         String questionAndAnswers = new TessOCR().getOCR(image);
         System.out.println("识别成功");
-        System.out.println("识别时间："+(System.currentTimeMillis()-beginOfDectect));
-        if(!questionAndAnswers.contains(QUESTION_FLAG)){
+        System.out.println("识别时间：" + (System.currentTimeMillis() - beginOfDetect));
+        if (questionAndAnswers==null || !questionAndAnswers.contains(QUESTION_FLAG)) {
+            System.out.println("问题识别失败，输入回车继续运行");
             return;
         }
         //获取问题和答案
@@ -174,6 +163,13 @@ public class Main {
         Information information = new Information(questionAndAnswers);
         String question = information.getQuestion();
         String[] answers = information.getAns();
+        if (question == null) {
+            System.err.println("问题不存在，输入回车继续运行");
+            return;
+        } else if (answers.length < 1) {
+            System.err.println("检测不到答案，输入回车继续运行");
+            return;
+        }
         System.out.println("问题:" + question);
         System.out.println("答案：");
         for (String answer : answers) {
@@ -181,51 +177,56 @@ public class Main {
         }
         //搜索
         long countQuestion = 1;
-        long[] countQA = new long[3];
-        long[] countAnswer = new long[3];
+        long[] countQA = new long[answers.length];
+        long[] countAnswer = new long[answers.length];
 
         int maxIndex = 0;
 
         Search[] searchQA = new Search[3];
         Search[] searchAnswers = new Search[3];
-        FutureTask<Long>[] futureQA = new FutureTask[NUM_OF_ANSWERS];
-        FutureTask<Long>[] futureAnswers = new FutureTask[NUM_OF_ANSWERS];
-        FutureTask<Long> futureQuestion = new FutureTask<Long>(new SearchAndOpen(question));
+        FutureTask[] futureQA = new FutureTask[answers.length];
+        FutureTask[] futureAnswers = new FutureTask[answers.length];
+        FutureTask futureQuestion = new FutureTask<Long>(new SearchAndOpen(question));
         new Thread(futureQuestion).start();
-        for (int i = 0; i < NUM_OF_ANSWERS; i++) {
+        for (int i = 0; i < answers.length; i++) {
             searchQA[i] = new Search(question + " " + answers[i]);
             searchAnswers[i] = new Search(answers[i]);
+
             futureQA[i] = new FutureTask<Long>(searchQA[i]);
             futureAnswers[i] = new FutureTask<Long>(searchAnswers[i]);
             new Thread(futureQA[i]).start();
             new Thread(futureAnswers[i]).start();
         }
         try {
-            while (!futureQuestion.isDone()) {}
-            countQuestion = futureQuestion.get();
-            for (int i = 0; i < NUM_OF_ANSWERS; i++) {
-                while (!futureQA[i].isDone()) {}
-                countQA[i] = futureQA[i].get();
-                while (!futureAnswers[i].isDone()) {}
-                countAnswer[i] = futureAnswers[i].get();
+            while (!futureQuestion.isDone()) {
+            }
+            countQuestion = (Long)futureQuestion.get();
+            for (int i = 0; i < answers.length; i++) {
+                while (true) {
+                    if(futureAnswers[i].isDone() && futureQA[i].isDone()){
+                        break;
+                    }
+                }
+                countQA[i] = (Long)futureQA[i].get();
+                countAnswer[i] = (Long)futureAnswers[i].get();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        float[] ans = new float[NUM_OF_ANSWERS];
-        for (int i = 0; i < NUM_OF_ANSWERS; i++) {
-            ans[i] = (float)countQA[i] / (float)(countQuestion * countAnswer[i]);
-            maxIndex = (ans[i]>ans[maxIndex] ) ? i : maxIndex;
+        float[] ans = new float[answers.length];
+        for (int i = 0; i < answers.length; i++) {
+            ans[i] = (float) countQA[i] / (float) (countQuestion * countAnswer[i]);
+            maxIndex = (ans[i] > ans[maxIndex]) ? i : maxIndex;
         }
         //根据pmi值进行打印搜索结果
-        int[] rank=rank(ans);
+        int[] rank = rank(ans);
         for (int i : rank) {
             System.out.print(answers[i]);
-            System.out.print(" countQA:"+countQA[i]);
-            System.out.print(" countAnswer:"+countAnswer[i]);
-            System.out.println(" ans:"+ans[i]);
+            System.out.print(" countQA:" + countQA[i]);
+            System.out.print(" countAnswer:" + countAnswer[i]);
+            System.out.println(" ans:" + ans[i]);
         }
 
         System.out.println("--------最终结果-------");
@@ -237,18 +238,17 @@ public class Main {
     }
 
     /**
-     *
      * @param floats pmi值
      * @return 返回排序的rank
      */
-    private static int[] rank(float[] floats){
-        int[] rank=new int[NUM_OF_ANSWERS];
-        float[] f=Arrays.copyOf(floats,3);
+    private static int[] rank(float[] floats) {
+        int[] rank = new int[floats.length];
+        float[] f = Arrays.copyOf(floats, floats.length);
         Arrays.sort(f);
-        for (int i = 0; i < NUM_OF_ANSWERS; i++) {
-            for (int j = 0; j < NUM_OF_ANSWERS; j++) {
-                if(f[i]==floats[j]){
-                    rank[i]=j;
+        for (int i = 0; i < floats.length; i++) {
+            for (int j = 0; j < floats.length; j++) {
+                if (f[i] == floats[j]) {
+                    rank[i] = j;
                 }
             }
         }

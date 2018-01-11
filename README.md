@@ -2,6 +2,7 @@
 >#重要更新 可以打开网页了
 
   #Update
+>*  2018-01-11 ：提高了稳定性，输入exit后程序退出
 >*  2018-01-11 ：增加了对MAC打开网页的支持
 >*  2018-01-10 ：现在会单独为问题打开一个网页进行展示搜索结果
 >*  2018-01-10 ：B站视频https://www.bilibili.com/video/av18152515/
@@ -40,7 +41,9 @@
    3. 答案 count(a)；
 6. 计算匹配值pmi: pmi[i]=count(q&a[i])/(count(q)*count(a[i]))
 7. 选择pmi值最高的为答案。
-
+> 该公式的依据来自于维基百科:
+      https://en.wikipedia.org/wiki/Pointwise_mutual_information
+      
 >#使用步骤
 1. 安卓手机打开USB调试，设置》开发者选项》USB调试
 2. 电脑与手机USB线连接，确保执行adb devices可以找到设备id
