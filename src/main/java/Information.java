@@ -1,3 +1,5 @@
+import org.junit.Test;
+
 /**
  * Created by 618 on 2018/1/8.
  * @author lingfengsan
@@ -11,6 +13,8 @@ public class Information {
         str = str.replaceAll("((\r\n)|\n)[\\s\t ]*(\\1)+", "$1").
                 replaceAll("^((\r\n)|\n)", "");
         str=str.replace('.',' ').replace(" ","");
+        //问号统一替换为英文问号防止报错
+        str=str.replace("？","?");
         int begin=(str.charAt(1)>='0'&& str.charAt(1)<=9)?2:1;
         question = str.trim().substring(begin, str.indexOf('?') + 1);
         question = question.replaceAll("((\r\n)|\n)", "");
@@ -34,6 +38,8 @@ public class Information {
                 "癫痫症\n" +
                 "\n" +
                 "小儿麻痹症";
+
+
         Information information= new Information(testStr);
         String que=information.getQuestion();
         String[] ans=information.getAns();
@@ -42,4 +48,5 @@ public class Information {
             System.out.println(an);
         }
     }
+
 }

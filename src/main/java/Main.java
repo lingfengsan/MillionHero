@@ -17,22 +17,121 @@ public class Main {
     private static final String QUESTION_FLAG="?";
 
     public static void main(String[] args) throws IOException {
-        BufferedReader bf=new BufferedReader(new InputStreamReader(System.in));
 
-        while (true) {
-            String str=bf.readLine();
-            System.out.println("开始执行");
-            try {
-                if(str.length()==0){
-                    run();
-                }
-            } catch (Exception e) {
-                System.out.println("error");
+        while(true){
+            Scanner scan = new Scanner(System.in);
+            System.out.println("请选择您要进入的游戏\n1.百万英雄\n2.冲顶大会");
+            switch (scan.nextInt()){
+                case 1:
+                    System.out.println("----------------进入百万英雄模式----------------");
+                    BufferedReader bf=new BufferedReader(new InputStreamReader(System.in));
+                    while (true) {
+                        String str=bf.readLine();
+                        System.out.println("开始执行");
+                        try {
+                            if(str.length()==0){
+                                run();
+                            }
+                        } catch (Exception e) {
+                            System.out.println("error");
+                        }
+                    }
+                case 2:
+                    System.out.println("----------------进入冲顶大会模式----------------");
+                    while (true) {
+
+                        try {
+                            cddhRun();
+                        } catch (Exception e) {
+                            System.out.println("error");
+                        }
+                    }
+                default:
+                    System.out.println("输入有误请重新输入");
+                    break;
             }
-
         }
-    }
 
+
+    }
+    /**
+     * add by Doodlister on 2018/1/11.
+     * @author Doodlister
+     * @throws InterruptedException
+     */
+    private static void cddhRun() {
+//       记录开始时间
+        long startTime;
+//       记录结束时间
+        long endTime;
+        startTime = System.currentTimeMillis();
+
+        //获取问题和答案
+        System.out.println("检测到题目");
+        Information information = CDDHGetQuestion.getQuestionInformation();
+        String question = information.getQuestion();
+        String[] answers = information.getAns();
+        System.out.println("问题:" + question);
+        System.out.println("答案：");
+        for (String answer : answers) {
+            System.out.println(answer);
+        }
+        //搜索
+        long countQuestion = 1;
+        long[] countQA = new long[3];
+        long[] countAnswer = new long[3];
+
+        int maxIndex = 0;
+
+        Search[] searchQA = new Search[3];
+        Search[] searchAnswers = new Search[3];
+        FutureTask<Long>[] futureQA = new FutureTask[NUM_OF_ANSWERS];
+        FutureTask<Long>[] futureAnswers = new FutureTask[NUM_OF_ANSWERS];
+        FutureTask<Long> futureQuestion = new FutureTask<Long>(new SearchAndOpen(question));
+        new Thread(futureQuestion).start();
+        for (int i = 0; i < NUM_OF_ANSWERS; i++) {
+            searchQA[i] = new Search(question + " " + answers[i]);
+            searchAnswers[i] = new Search(answers[i]);
+            futureQA[i] = new FutureTask<Long>(searchQA[i]);
+            futureAnswers[i] = new FutureTask<Long>(searchAnswers[i]);
+            new Thread(futureQA[i]).start();
+            new Thread(futureAnswers[i]).start();
+        }
+        try {
+            while (!futureQuestion.isDone()) {}
+            countQuestion = futureQuestion.get();
+            for (int i = 0; i < NUM_OF_ANSWERS; i++) {
+                while (!futureQA[i].isDone()) {}
+                countQA[i] = futureQA[i].get();
+                while (!futureAnswers[i].isDone()) {}
+                countAnswer[i] = futureAnswers[i].get();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        float[] ans = new float[NUM_OF_ANSWERS];
+        for (int i = 0; i < NUM_OF_ANSWERS; i++) {
+            ans[i] = (float)countQA[i] / (float)(countQuestion * countAnswer[i]);
+            maxIndex = (ans[i]>ans[maxIndex] ) ? i : maxIndex;
+        }
+        //根据pmi值进行打印搜索结果
+        int[] rank=rank(ans);
+        for (int i : rank) {
+            System.out.print(answers[i]);
+            System.out.print(" countQA:"+countQA[i]);
+            System.out.print(" countAnswer:"+countAnswer[i]);
+            System.out.println(" ans:"+ans[i]);
+        }
+
+        System.out.println("--------最终结果-------");
+        System.out.println(answers[maxIndex]);
+        endTime = System.currentTimeMillis();
+        float excTime = (float) (endTime - startTime) / 1000;
+
+        System.out.println("执行时间：" + excTime + "s");
+    }
     private static void run() throws InterruptedException {
 //       记录开始时间
         long startTime;
