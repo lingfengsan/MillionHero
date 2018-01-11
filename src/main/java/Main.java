@@ -1,7 +1,6 @@
 import exception.CorrectAnswerException;
 import exception.NoBeginExcetpion;
 
-import javax.swing.text.DateFormatter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
@@ -19,6 +17,7 @@ import java.util.concurrent.FutureTask;
  * @author lingfengsan
  */
 public class Main {
+    private static final int NUM_OF_ANSWERS=3;
     private static final String QUESTION_FLAG = "?";
 
     public static void main(String[] args)  throws IOException{
@@ -52,7 +51,7 @@ public class Main {
      * @author Doodlister
      * @throws InterruptedException
      */
-    private static void cddhRun() throws InterruptedException {
+    private static void cddhRun()  {
         //       记录开始时间
         long startTime;
         //       记录结束时间
@@ -67,12 +66,20 @@ public class Main {
         } catch (NoBeginExcetpion noBeginExcetpion) {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             System.out.println(df.format(new Date())+"--答题尚未开始");
-            Thread.sleep(1000);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return;
         }catch (CorrectAnswerException correctAnswerException){
             System.out.println("-----------------正确答案公布-------------------");
             System.out.println(correctAnswerException.getMessage());
-            Thread.sleep(5000);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return;
         }
         System.out.println("检测到题目");
