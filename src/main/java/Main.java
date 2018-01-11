@@ -44,6 +44,7 @@ public class Main {
                 break;
             }else{
                 if (str.length() == 0) {
+                    System.out.println("开始答题");
                     if("1".equals(selection)){
                         run();
                     }else if("2".equals(selection)){
@@ -193,18 +194,19 @@ public class Main {
         }
         //搜索
         long countQuestion = 1;
-        long[] countQA = new long[answers.length];
-        long[] countAnswer = new long[answers.length];
+        int numOfAnswer=answers.length>3?4:answers.length;
+        long[] countQA = new long[numOfAnswer];
+        long[] countAnswer = new long[numOfAnswer];
 
         int maxIndex = 0;
 
-        Search[] searchQA = new Search[3];
-        Search[] searchAnswers = new Search[3];
-        FutureTask[] futureQA = new FutureTask[answers.length];
-        FutureTask[] futureAnswers = new FutureTask[answers.length];
+        Search[] searchQA = new Search[numOfAnswer];
+        Search[] searchAnswers = new Search[numOfAnswer];
+        FutureTask[] futureQA = new FutureTask[numOfAnswer];
+        FutureTask[] futureAnswers = new FutureTask[numOfAnswer];
         FutureTask futureQuestion = new FutureTask<Long>(new SearchAndOpen(question));
         new Thread(futureQuestion).start();
-        for (int i = 0; i < answers.length; i++) {
+        for (int i = 0; i < numOfAnswer; i++) {
             searchQA[i] = new Search(question + " " + answers[i]);
             searchAnswers[i] = new Search(answers[i]);
 
@@ -217,7 +219,7 @@ public class Main {
             while (!futureQuestion.isDone()) {
             }
             countQuestion = (Long)futureQuestion.get();
-            for (int i = 0; i < answers.length; i++) {
+            for (int i = 0; i < numOfAnswer; i++) {
                 while (true) {
                     if(futureAnswers[i].isDone() && futureQA[i].isDone()){
                         break;
@@ -231,8 +233,8 @@ public class Main {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        float[] ans = new float[answers.length];
-        for (int i = 0; i < answers.length; i++) {
+        float[] ans = new float[numOfAnswer];
+        for (int i = 0; i < numOfAnswer; i++) {
             ans[i] = (float) countQA[i] / (float) (countQuestion * countAnswer[i]);
             maxIndex = (ans[i] > ans[maxIndex]) ? i : maxIndex;
         }
