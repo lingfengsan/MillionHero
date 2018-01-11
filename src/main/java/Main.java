@@ -21,6 +21,7 @@ public class Main {
 
         while (true) {
             String str=bf.readLine();
+            System.out.println("开始执行");
             try {
                 if(str.length()==0){
                     run();
