@@ -22,7 +22,7 @@ public class Search implements Callable {
         String line = null;
         while (!findIt) {
             URL url = new URL(path);
-            BufferedReader breaded = new BufferedReader(new InputStreamReader(url.openStream()));
+            BufferedReader breaded = new BufferedReader(new InputStreamReader(url.openStream(),"UTF-8"));
             while ((line = breaded.readLine()) != null) {
                 if (line.contains("百度为您找到相关结果约")) {
                     findIt = true;
