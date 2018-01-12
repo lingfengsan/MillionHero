@@ -9,8 +9,8 @@ import java.io.File;
 public interface OCR {
     /**
      *获取识别图片后的结果
-     * @param path String
+     * @param file String
      * @return String
      */
-    String getOCR(String path);
+    String getOCR(File file);
 }

@@ -4,6 +4,7 @@ import com.baidu.aip.ocr.AipOcr;
 import ocr.OCR;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -20,10 +21,12 @@ public class BaiDuOCR implements OCR{
         // 可选：设置网络连接参数
         CLIENT.setConnectionTimeoutInMillis(2000);
         CLIENT.setSocketTimeoutInMillis(60000);
+        System.out.println("欢迎您使用百度OCR进行文字识别");
     }
     @Override
-    public String getOCR(String path) {
+    public String getOCR(File file) {
         Long start=System.currentTimeMillis();
+        String path=file.getAbsolutePath();
         // 调用接口
         JSONObject res = CLIENT.basicGeneral(path, new HashMap<String, String>());
         String result=res.toString(2);
@@ -34,7 +37,7 @@ public class BaiDuOCR implements OCR{
     public static void main(String[] args) {
         OCR ocr=new BaiDuOCR();
         String path = "D:\\Photo\\20180111214256.png";
-        String result=ocr.getOCR(path);
+        String result=ocr.getOCR(new File(path));
         System.out.println(result);
     }
 }

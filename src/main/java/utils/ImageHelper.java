@@ -29,17 +29,22 @@ public class ImageHelper {
      * @param h    图片高度
      * @throws IOException 异常处理
      */
-    public static void cutImage(String src, String dest, int x, int y, int w, int h) throws IOException {
-        Iterator iterator = ImageIO.getImageReadersByFormatName("png");
-        ImageReader reader = (ImageReader) iterator.next();
-        InputStream in = new FileInputStream(src);
-        ImageInputStream iis = ImageIO.createImageInputStream(in);
-        reader.setInput(iis, true);
-        ImageReadParam param = reader.getDefaultReadParam();
-        Rectangle rect = new Rectangle(x, y, w, h);
-        param.setSourceRegion(rect);
-        BufferedImage bi = reader.read(0, param);
-        ImageIO.write(bi, "png", new File(dest));
+    public void cutImage(String src, String dest, int x, int y, int w, int h)  {
+        try{
+            Iterator iterator = ImageIO.getImageReadersByFormatName("png");
+            ImageReader reader = (ImageReader) iterator.next();
+            InputStream in = new FileInputStream(src);
+            ImageInputStream iis = ImageIO.createImageInputStream(in);
+            reader.setInput(iis, true);
+            ImageReadParam param = reader.getDefaultReadParam();
+            Rectangle rect = new Rectangle(x, y, w, h);
+            param.setSourceRegion(rect);
+            BufferedImage bi = reader.read(0, param);
+            ImageIO.write(bi, "png", new File(dest));
+        }catch (IOException e){
+            System.err.println("裁剪图片失败");
+        }
+
 
     }
 
@@ -47,7 +52,7 @@ public class ImageHelper {
         String src = "D:\\20180111214256.png";
         String dest=  "D:\\18.png";
         long start=System.currentTimeMillis();
-        cutImage(src,dest,100,100,100,100);
+        new ImageHelper().cutImage(src,dest,100,100,100,100);
         System.out.println(System.currentTimeMillis()-start);
     }
 }
