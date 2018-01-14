@@ -1,4 +1,4 @@
-#教你用Java来答题(百万英雄/冲刺大会等)
+#教你用Java来玩答题(百万英雄/冲刺大会等)
 
 # MillionHero
 今日头条的百万英雄答题助手
@@ -47,10 +47,10 @@
 
 
 #FAQ
-+ 详见 Wiki-FAQ
++  详见 Wiki-FAQ
 #更新日志
-+ 详见 changelog
++  详见 changelog
 #开发者列表
-+ 详见 contributors
++  详见 contributors
 #TODO
-+ 可以增加一个图形化界面，分别对题目和答案进行搜索并进行展示。
++  可以增加一个图形化界面，分别对题目和答案进行搜索并进行展示。
