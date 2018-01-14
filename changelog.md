@@ -1,7 +1,5 @@
 + 2018-01-14
   +  移除adb驱动、tessdata资源包，[下载请点击](http://url.cn/5nahQml)，下载后放在/src/main/resource目录下
-
-  +  增加了冲顶大会模式。
 + 2018-01-12
   +  为WINDOWS增加了ADB驱动，不需要自己再设置
   +  增加了冲顶大会模式。

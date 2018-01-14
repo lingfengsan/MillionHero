@@ -16,8 +16,8 @@ import java.io.InputStreamReader;
  */
 public class Main {
     /**
-     * ADB_PATH为自己的adb驱动目录,Windows无需修改
-     * IMAGE_PATH为本机图片存放目录
+     * ADB_PATH为自己的adb驱动目录，可以放在resource目录下，也可以自己指定
+     * IMAGE_PATH为本机图片存放目录，必须是已存在目录
      */
 //    private static final String ADB_PATH = "D:\\software\\Android\\android-sdk\\platform-tools\\adb";
     private static final String ADB_PATH = new File("").getAbsolutePath()+"\\target\\classes\\adb\\adb";
