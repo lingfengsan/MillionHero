@@ -1,4 +1,4 @@
-#教你用Java来玩答题(百万英雄/冲刺大会等)
+# 教你用Java来玩答题(百万英雄/冲刺大会等)
 
 # MillionHero
 今日头条的百万英雄答题助手
@@ -11,12 +11,12 @@
 如果可以把直播中的问题和答案提取出来，然后百度，然后统计一下哪个更相关，就可以辅助你答题了。
 当然也可以直接把百度出来题目和答案都展示出来。本文用的第一种简单粗暴。
 
-#工具介绍
+# 工具介绍
 * JAVA8
 * Android 手机
 * Adb 驱动
 
-#原理说明
+# 原理说明
 
 1. 将手机点击到直播界面（在这里我们先打开一张图片）；
 2. 用Adb 工具获取当前手机截图，并用adb将截图pull上来
@@ -33,7 +33,7 @@
 > 该公式的依据来自于维基百科:
       https://en.wikipedia.org/wiki/Pointwise_mutual_information
       
->#使用步骤
+# 使用步骤
 1. 安卓手机打开USB调试，设置》开发者选项》USB调试
 2. 电脑与手机USB线连接，确保执行adb devices可以找到设备id
 3. 打开百万直播
@@ -46,11 +46,11 @@
     
 
 
-#FAQ
-+  详见 Wiki-FAQ
-#更新日志
-+  详见 changelog
-#开发者列表
-+  详见 contributors
-#TODO
+# FAQ
++  详见 [Wiki-FAQ](https://github.com/lingfengsan/MillionHero/wiki)
+# 更新日志
++  详见 [changelog](https://github.com/lingfengsan/MillionHero/blob/master/changelog.md)
+# 开发者列表
++  详见 [contributors](https://github.com/lingfengsan/MillionHero/graphs/contributors)
+# TODO
 +  可以增加一个图形化界面，分别对题目和答案进行搜索并进行展示。
