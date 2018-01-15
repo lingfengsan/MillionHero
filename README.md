@@ -34,7 +34,7 @@
       https://en.wikipedia.org/wiki/Pointwise_mutual_information
       
 # 使用步骤
-    相关软件工具安装和使用步骤请参考  [Android操作步骤](https://github.com/lingfengsan/MillionHero/wiki/Android%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4)
+  相关软件工具安装和使用步骤请参考  [Android操作步骤](https://github.com/lingfengsan/MillionHero/wiki/Android%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4)
 
   
 >PS:注意程序中的adb驱动目录要更换成自己的目录
