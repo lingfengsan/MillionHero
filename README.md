@@ -19,16 +19,11 @@
 # 原理说明
 
 1. 将手机点击到直播界面（在这里我们先打开一张图片）；
-2. 用Adb 工具获取当前手机截图，并用adb将截图pull上来
-   >     adb shell screencap -p /sdcard/1.png
-   >     adb pull /sdcard/1.png .
+2. 用Adb 工具获取当前手机截图
 3. 用tessOCR进行图像识别，提取文字；
 4. 将文字中的问题和答案提取出来；
-5. 使用百度搜索并统计搜索得到结果数量
-   1. 问题+各个答案count(q&a)；
-   2. 问题 count(q)；
-   3. 答案 count(a)；
-6. 计算匹配值pmi: pmi[i]=count(q&a[i])/(count(q)*count(a[i]))
+5. 使用百度搜索并打开网页，然后统计搜索得到结果数量
+6. 计算pmi
 7. 选择pmi值最高的为答案。
 > 该公式的依据来自于维基百科:
       https://en.wikipedia.org/wiki/Pointwise_mutual_information
