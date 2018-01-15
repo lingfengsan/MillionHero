@@ -1,5 +1,5 @@
 # 教你用Java来玩答题(百万英雄/冲刺大会等)
-B站视频https://www.bilibili.com/video/av18152515/
+
 # MillionHero
 今日头条的百万英雄答题助手
 
@@ -34,10 +34,7 @@ B站视频https://www.bilibili.com/video/av18152515/
       https://en.wikipedia.org/wiki/Pointwise_mutual_information
       
 # 使用步骤
-1. 安卓手机打开USB调试，设置》开发者选项》USB调试
-2. 电脑与手机USB线连接，确保执行adb devices可以找到设备id
-3. 打开百万直播
-4. 运行我们的java程序，当弹出题目时，输入回车即可
+    相关软件工具安装和使用步骤请参考  [Android操作步骤](https://github.com/lingfengsan/MillionHero/wiki/Android%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4)
 
   
 >PS:注意程序中的adb驱动目录要更换成自己的目录

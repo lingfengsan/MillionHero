@@ -3,3 +3,5 @@
 target
 /src/main/resources/adb/
 /src/main/resources/tessdata/
+/src/resource/tessdata/
+/src/resource/adb/
