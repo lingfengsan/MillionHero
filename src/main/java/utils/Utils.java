@@ -86,7 +86,6 @@ public class Utils {
         File curPhoto = new File(imagePath, curDate + ".png");
         //截屏存到手机本地
         try {
-            while (!curPhoto.exists() || curPhoto.length() < MIN_IMAGE_SIZE) {
                 Process process = Runtime.getRuntime().exec(adbPath
                         + " shell /system/bin/screencap -p /sdcard/screenshot.png");
                 process.waitFor();
@@ -94,8 +93,10 @@ public class Utils {
                 process = Runtime.getRuntime().exec(adbPath
                         + " pull /sdcard/screenshot.png " + curPhoto.getAbsolutePath());
                 process.waitFor();
-            }
-            //返回当前图片名字
+                if(!curPhoto.exists() || curPhoto.length() < MIN_IMAGE_SIZE){
+                    System.err.println("截取图片失败，请检查环境搭建");
+                }
+                //返回当前图片名字
             return curPhoto.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();

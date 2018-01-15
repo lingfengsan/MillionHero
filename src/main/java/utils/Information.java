@@ -2,6 +2,7 @@ package utils;
 
 /**
  * Created by 618 on 2018/1/12.
+ * @author lingfengsan
  */
 public class Information {
     private String question;
