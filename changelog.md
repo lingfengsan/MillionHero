@@ -1,3 +1,6 @@
++ 2018-01-15
+  +  百度OCR功能上线，欢迎使用
+  +  百度OCR的配置请前往[Android操作步骤](https://github.com/lingfengsan/MillionHero/wiki/Android%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4)
 + 2018-01-14
   +  移除adb驱动、tessdata资源包，[下载请点击](http://url.cn/5nahQml)，下载后放在/src/main/resource目录下
 + 2018-01-12
