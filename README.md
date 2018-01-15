@@ -15,6 +15,7 @@
 * JAVA8
 * Android 手机
 * Adb 驱动
+* TessOCR
 
 # 原理说明
 
