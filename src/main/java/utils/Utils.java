@@ -70,7 +70,7 @@ public class Utils {
         str=str.replace('.',' ').replace(" ","");
         //问号统一替换为英文问号防止报错
         str=str.replace("？","?");
-        int begin=(str.charAt(1)>='0'&& str.charAt(1)<=9)?2:1;
+        int begin=(str.charAt(1)>='0'&& str.charAt(1)<='9')?2:1;
         String question = str.trim().substring(begin, str.indexOf('?') + 1);
         question = question.replaceAll("((\r\n)|\n)", "");
         System.out.println(question);
@@ -86,7 +86,6 @@ public class Utils {
         File curPhoto = new File(imagePath, curDate + ".png");
         //截屏存到手机本地
         try {
-            while (!curPhoto.exists() || curPhoto.length() < MIN_IMAGE_SIZE) {
                 Process process = Runtime.getRuntime().exec(adbPath
                         + " shell /system/bin/screencap -p /sdcard/screenshot.png");
                 process.waitFor();
@@ -94,8 +93,10 @@ public class Utils {
                 process = Runtime.getRuntime().exec(adbPath
                         + " pull /sdcard/screenshot.png " + curPhoto.getAbsolutePath());
                 process.waitFor();
-            }
-            //返回当前图片名字
+                if(!curPhoto.exists() || curPhoto.length() < MIN_IMAGE_SIZE){
+                    System.err.println("截取图片失败，请检查环境搭建");
+                }
+                //返回当前图片名字
             return curPhoto.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();

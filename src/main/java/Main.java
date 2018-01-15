@@ -16,8 +16,8 @@ import java.io.InputStreamReader;
  */
 public class Main {
     /**
-     * ADB_PATH为自己的adb驱动目录,Windows无需修改
-     * IMAGE_PATH为本机图片存放目录
+     * ADB_PATH为自己的adb驱动目录，可以放在resource目录下，也可以自己指定
+     * IMAGE_PATH为本机图片存放目录，必须是已存在目录
      */
 //    private static final String ADB_PATH = "D:\\software\\Android\\android-sdk\\platform-tools\\adb";
     private static final String ADB_PATH = new File("").getAbsolutePath()+"\\target\\classes\\adb\\adb";
@@ -29,11 +29,13 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("请选择您要使用的文字识别方式\n1.TessOCR\n2.百度OCR");
-        System.out.println("默认使用TessOCR，选择后回车");
-        OCR ocr = OCR_FACTORY.getOcr(Integer.valueOf(bf.readLine()));
+        System.out.println("默认使用TessOCR，选择后回车,不能为空");
+        String selection=bf.readLine();
+        OCR ocr = OCR_FACTORY.getOcr(Integer.valueOf((selection.length()==0)?"1":selection));
         System.out.println("请选择您要进入的游戏\n1.百万英雄\n2.冲顶大会");
         System.out.println("默认为百万英雄，选择后回车");
-        Pattern pattern = PATTERN_FACTORY.getPattern(Integer.valueOf(bf.readLine()), ocr, UTILS);
+        selection=bf.readLine();
+        Pattern pattern = PATTERN_FACTORY.getPattern(Integer.valueOf((selection.length()==0)?"1":selection), ocr, UTILS);
         while (true) {
             String str = bf.readLine();
             if ("exit".equals(str)) {
