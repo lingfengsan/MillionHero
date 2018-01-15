@@ -13,8 +13,7 @@ public class OCRFactory {
                 return new TessOCR();
             }
             case 2:{
-                System.out.println("百度OCR正在完善，已配置为TessOCR");
-                return new TessOCR();
+                return new BaiDuOCR();
             }
             default:{
                 return new TessOCR();
