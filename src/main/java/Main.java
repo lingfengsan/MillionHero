@@ -5,7 +5,6 @@ import pattern.impl.PatternFactory;
 import utils.Utils;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -20,7 +19,7 @@ public class Main {
      * IMAGE_PATH为本机图片存放目录，必须是已存在目录
      */
 //    private static final String ADB_PATH = "D:\\software\\Android\\android-sdk\\platform-tools\\adb";
-    private static final String ADB_PATH = new File("").getAbsolutePath()+"\\target\\classes\\adb\\adb";
+    private static final String ADB_PATH = "D:\\adb\\adb";
     private static final String IMAGE_PATH = "D:\\Photo";
     private static final OCRFactory OCR_FACTORY = new OCRFactory();
     private static final PatternFactory PATTERN_FACTORY = new PatternFactory();
@@ -44,7 +43,7 @@ public class Main {
             } else {
                 if (str.length() == 0) {
                     System.out.print("开始答题");
-                    pattern.run();
+                    System.out.println(pattern.run());
                 }
             }
         }

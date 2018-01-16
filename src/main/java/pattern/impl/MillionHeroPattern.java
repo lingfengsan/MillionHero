@@ -38,25 +38,27 @@ public class MillionHeroPattern implements Pattern {
     }
 
     @Override
-    public void run() throws UnsupportedEncodingException {
+    public String run() throws UnsupportedEncodingException {
         //       记录开始时间
         long startTime;
         //       记录结束时间
         long endTime;
+        StringBuilder sb=new StringBuilder();
         startTime = System.currentTimeMillis();
         //获取图片
         String imagePath = utils.getImage();
         System.out.println("图片获取成功");
         //裁剪图片
-         imageHelper.cutImage(imagePath,imagePath,START_X,START_Y,WIDTH,HEIGHT);
+        imageHelper.cutImage(imagePath,imagePath,START_X,START_Y,WIDTH,HEIGHT);
         //图像识别
         Long beginOfDetect = System.currentTimeMillis();
         String questionAndAnswers = ocr.getOCR(new File(imagePath));
+        sb.append(questionAndAnswers).append("\n");
         System.out.println("识别成功");
         System.out.println("识别时间：" + (System.currentTimeMillis() - beginOfDetect));
         if (questionAndAnswers == null || !questionAndAnswers.contains(QUESTION_FLAG)) {
-            System.out.println("问题识别失败，输入回车继续运行");
-            return;
+            sb.append("问题识别失败，输入回车继续运行\n");
+            return sb.toString();
         }
         //获取问题和答案
         System.out.println("检测到题目");
@@ -64,16 +66,16 @@ public class MillionHeroPattern implements Pattern {
         String question = information.getQuestion();
         String[] answers = information.getAns();
         if (question == null) {
-            System.err.println("问题不存在，输入回车继续运行");
-            return;
+            sb.append("问题不存在，继续运行\n");
+            return sb.toString();
         } else if (answers.length < 1) {
-            System.err.println("检测不到答案，输入回车继续运行");
-            return;
+            sb.append("检测不到答案，继续运行\n");
+            return sb.toString();
         }
-        System.out.println("问题:" + question);
-        System.out.println("答案：");
+        sb.append("问题:").append(question).append("\n");
+        sb.append("答案：\n");
         for (String answer : answers) {
-            System.out.println(answer);
+            sb.append(answer).append("\n");
         }
         //搜索
         long countQuestion = 1;
@@ -124,17 +126,19 @@ public class MillionHeroPattern implements Pattern {
         //根据pmi值进行打印搜索结果
         int[] rank = Utils.rank(ans);
         for (int i : rank) {
-            System.out.print(answers[i]);
-            System.out.print(" countQA:" + countQA[i]);
-            System.out.print(" countAnswer:" + countAnswer[i]);
-            System.out.println(" ans:" + ans[i]);
+
+            sb.append(answers[i]);
+            sb.append(" countQA:").append(countQA[i]);
+            sb.append(" countAnswer:").append(countAnswer[i]);
+            sb.append(" ans:").append(ans[i]).append("\n");
         }
 
-        System.out.println("--------最终结果-------");
-        System.out.println(answers[maxIndex]);
+        sb.append("--------最终结果-------\n");
+        sb.append(answers[maxIndex]);
         endTime = System.currentTimeMillis();
         float excTime = (float) (endTime - startTime) / 1000;
 
-        System.out.println("执行时间：" + excTime + "s");
+        sb.append("执行时间：").append(excTime).append("s").append("\n");
+        return sb.toString();
     }
 }

@@ -1,6 +1,7 @@
 package ocr.impl;
 
 import com.baidu.aip.ocr.AipOcr;
+import exception.NoRemainingException;
 import ocr.OCR;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,6 +31,14 @@ public class BaiDuOCR implements OCR{
         String path=file.getAbsolutePath();
         // 调用接口
         JSONObject res = CLIENT.basicGeneral(path, new HashMap<String, String>());
+        String searchResult=res.toString();
+        if(searchResult.contains("error_msg")){
+            try {
+                throw new NoRemainingException("OCR可使用次数不足");
+            } catch (NoRemainingException e) {
+                return "OCR可使用次数不足,您可使用TessOCR";
+            }
+        }
         System.out.println(res.toString());
         JSONArray jsonArray=res.getJSONArray("words_result");
         StringBuilder sb=new StringBuilder();
