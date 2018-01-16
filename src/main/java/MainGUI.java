@@ -50,7 +50,7 @@ public class MainGUI {
         JLabel adbPathLabel = new JLabel("adb路径：");
         adbPathLabel.setBounds(10, 20, 100, 25);
         panel.add(adbPathLabel);
-        adbPathText = new JTextField("D:\\adb\\adb", 30);
+        adbPathText = new JTextField("D:\\adb", 30);
         adbPathText.setBounds(100, 20, 165, 25);
         panel.add(adbPathText);
     }
@@ -92,7 +92,7 @@ public class MainGUI {
         ActionListener listener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Utils utils=new Utils(adbPathText.getText(),imagePathText.getText());
+                Utils utils=new Utils(adbPathText.getText()+"\\adb",imagePathText.getText());
                 OCR ocr = OCR_FACTORY.getOcr(ocrSelection);
                 pattern = PATTERN_FACTORY.getPattern(patternSelection, ocr, utils);
             }
