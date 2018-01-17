@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -67,10 +66,11 @@ public class Utils {
         //先去除空行
         str = str.replaceAll("((\r\n)|\n)[\\s\t ]*(\\1)+", "$1").
                 replaceAll("^((\r\n)|\n)", "");
-        str=str.replace('.',' ').replace(" ","");
+        str=str.replace(" ","");
         //问号统一替换为英文问号防止报错
         str=str.replace("？","?");
         int begin=(str.charAt(1)>='0'&& str.charAt(1)<='9')?2:1;
+        str=str.replaceFirst(".","");
         String question = str.trim().substring(begin, str.indexOf('?') + 1);
         question = question.replaceAll("((\r\n)|\n)", "");
         System.out.println(question);
