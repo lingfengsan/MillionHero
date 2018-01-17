@@ -70,7 +70,7 @@ public class Utils {
         //问号统一替换为英文问号防止报错
         str=str.replace("？","?");
         int begin=(str.charAt(1)>='0'&& str.charAt(1)<='9')?2:1;
-        str=str.replaceFirst(".","");
+        str=str.replaceFirst("\\.","");
         String question = str.trim().substring(begin, str.indexOf('?') + 1);
         question = question.replaceAll("((\r\n)|\n)", "");
         System.out.println(question);
