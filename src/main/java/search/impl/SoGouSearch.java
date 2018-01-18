@@ -17,10 +17,14 @@ import java.net.URLEncoder;
 public class SoGouSearch implements Search{
     private Boolean needOpenBrowser;
     private String path;
-    public SoGouSearch(String question, Boolean needOpenBrowser) throws UnsupportedEncodingException {
-        this.needOpenBrowser = needOpenBrowser;
-        this.path = "https://www.sogou.com/web?query=" +
-                URLEncoder.encode(question, "gb2312");
+    public SoGouSearch(String question, Boolean needOpenBrowser)  {
+        try{
+            this.needOpenBrowser = needOpenBrowser;
+            this.path = "https://www.sogou.com/web?query=" +
+                    URLEncoder.encode(question, "gb2312");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public Long search() throws IOException {

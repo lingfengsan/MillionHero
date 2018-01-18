@@ -19,10 +19,15 @@ public class BaiDuSearch implements Search {
     private Boolean needOpenBrowser;
     private String path;
 
-    public BaiDuSearch(String question, Boolean needOpenBrowser) throws UnsupportedEncodingException {
-        this.needOpenBrowser = needOpenBrowser;
-        this.path = "http://www.baidu.com/s?tn=ichuner&lm=-1&word=" +
-                URLEncoder.encode(question, "gb2312") + "&rn=1";
+    public BaiDuSearch(String question, Boolean needOpenBrowser) {
+        try {
+            this.needOpenBrowser = needOpenBrowser;
+            this.path = "http://www.baidu.com/s?tn=ichuner&lm=-1&word=" +
+                    URLEncoder.encode(question, "gb2312") + "&rn=1";
+        }catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
     }
     @Override
     public Long search() throws IOException {

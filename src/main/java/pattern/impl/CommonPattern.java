@@ -4,6 +4,7 @@ import ocr.OCR;
 import pattern.Pattern;
 import search.Search;
 import search.impl.BaiDuSearch;
+import search.impl.SearchFactory;
 import utils.ImageHelper;
 import utils.Information;
 import utils.Utils;
@@ -24,31 +25,41 @@ public class CommonPattern implements Pattern {
     private static int[] startY = {300, 300};
     private static int[] width = {900, 900};
     private static int[] height = {900, 700};
+    private ImageHelper imageHelper = new ImageHelper();
+    private SearchFactory searchFactory=new SearchFactory();
     private int patterSelection;
-    private int
+    private int searchSelection;
     private OCR ocr;
     private Utils utils;
-    private ImageHelper imageHelper = new ImageHelper();
 
-    CommonPattern(int patterSelection, OCR ocr, Utils utils) {
-        this.patterSelection = patterSelection;
-        this.ocr = ocr;
-        this.utils = utils;
+    public void setPatterSelection(int patterSelection) {
         switch (patterSelection){
-            case 0:{
-                System.out.println("欢迎进入百万英雄模式");
-                break;
-            }
-            case 1:{
-                System.out.println("欢迎进入冲刺大会模式");
+            case 2:{
+                System.out.println("欢迎进入冲顶大会");
                 break;
             }
             default:{
-                System.out.println("欢迎进入百万英雄模式");
+                System.out.println("欢迎进入百万英雄");
                 break;
             }
         }
+        this.patterSelection = patterSelection;
     }
+
+    public void setSearchSelection(int searchSelection) {
+        this.searchSelection = searchSelection;
+    }
+
+    public void setOcr(OCR ocr) {
+        this.ocr = ocr;
+    }
+
+    public void setUtils(Utils utils) {
+        this.utils = utils;
+    }
+
+
+
     @Override
     public String run() throws UnsupportedEncodingException {
         //       记录开始时间
@@ -103,11 +114,11 @@ public class CommonPattern implements Pattern {
         FutureTask[] futureQA = new FutureTask[numOfAnswer];
         FutureTask[] futureAnswers = new FutureTask[numOfAnswer];
 
-        futureQuestion[0]=new FutureTask<Long>(searchQ);
+        futureQuestion[0]=new FutureTask<Long>(searchFactory.getSearch(searchSelection,question,true));
         new Thread(futureQuestion[0]).start();
         for (int i = 0; i < numOfAnswer; i++) {
-            searchQA[i] = new BaiDuSearch((question + " " + answers[i]), false);
-            searchAnswers[i] = new BaiDuSearch(answers[i], false);
+            searchQA[i] = searchFactory.getSearch(searchSelection,(question + " " + answers[i]),true);
+            searchAnswers[i] = searchFactory.getSearch(searchSelection,answers[i],true);
 
             futureQA[i] = new FutureTask<Long>(searchQA[i]);
             futureAnswers[i] = new FutureTask<Long>(searchAnswers[i]);
