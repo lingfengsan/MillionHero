@@ -1,7 +1,6 @@
 import ocr.OCR;
 import ocr.impl.OCRFactory;
 import pattern.Pattern;
-import pattern.impl.PatternFactory;
 import utils.Utils;
 
 import javax.swing.*;

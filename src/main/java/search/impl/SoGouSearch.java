@@ -11,18 +11,16 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 /**
- * Created by 618 on 2018/1/12.
- *
+ * Created by lingfengsan on 2018/1/18.
  * @author lingfengsan
  */
-public class BaiDuSearch implements Search {
+public class SoGouSearch implements Search{
     private Boolean needOpenBrowser;
     private String path;
-
-    public BaiDuSearch(String question, Boolean needOpenBrowser) throws UnsupportedEncodingException {
+    public SoGouSearch(String question, Boolean needOpenBrowser) throws UnsupportedEncodingException {
         this.needOpenBrowser = needOpenBrowser;
-        this.path = "http://www.baidu.com/s?tn=ichuner&lm=-1&word=" +
-                URLEncoder.encode(question, "gb2312") + "&rn=1";
+        this.path = "https://www.sogou.com/web?query=" +
+                URLEncoder.encode(question, "gb2312");
     }
     @Override
     public Long search() throws IOException {
@@ -32,12 +30,11 @@ public class BaiDuSearch implements Search {
             URL url = new URL(path);
             BufferedReader breaded = new BufferedReader(new InputStreamReader(url.openStream(),"UTF-8"));
             while ((line = breaded.readLine()) != null) {
-                if (line.contains("百度为您找到相关结果约")) {
+                if (line.contains("搜狗已为您找到约")) {
                     findIt = true;
-                    int start = line.indexOf("百度为您找到相关结果约") + 11;
-
+                    int start = line.indexOf("搜狗已为您找到约") + 8;
                     line = line.substring(start);
-                    int end = line.indexOf("个");
+                    int end = line.indexOf("条");
                     line = line.substring(0, end);
                     break;
                 }
@@ -56,5 +53,14 @@ public class BaiDuSearch implements Search {
         return search();
     }
 
-
+    public static void main(String[] args) {
+        try {
+            Search search=new SoGouSearch("搜狗",true);
+            System.out.println(search.call());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
