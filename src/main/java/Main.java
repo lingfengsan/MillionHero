@@ -26,27 +26,34 @@ public class Main {
     private static final CommonPattern COMMON_PATTERN = new CommonPattern();
     private static final Utils UTILS = new Utils(ADB_PATH, IMAGE_PATH);
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        Scanner sc=new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         COMMON_PATTERN.setUtils(UTILS);
+        //设置OCR方式
         System.out.println("请选择您要使用的文字识别方式\n1.TessOCR\n2.百度OCR");
         System.out.println("默认使用TessOCR，选择后回车,不能为空");
-        int selection=sc.nextInt();
+        int selection=Integer.valueOf(bf.readLine());
         COMMON_PATTERN.setOcr(OCR_FACTORY.getOcr(selection));
+        //设置搜索方式
+        System.out.println("请选择您要使用的搜索方式\n1.百度\n2.搜狗");
+        System.out.println("默认使用百度搜索，选择后回车,不能为空");
+        selection=Integer.valueOf(bf.readLine());
+        COMMON_PATTERN.setSearchSelection(selection);
+        //设置游戏模式
         System.out.println("请选择您要进入的游戏\n1.百万英雄\n2.冲顶大会");
         System.out.println("默认为百万英雄，选择后回车");
-        selection = sc.nextInt();
+        selection=Integer.valueOf(bf.readLine());
         COMMON_PATTERN.setPatterSelection(selection);
-        COMMON_PATTERN.setSearchSelection(1);
-
+        System.out.println("设置完成，当题目出现后请按回车键");
         while (true) {
-            String str = sc.nextLine();
+            String str = bf.readLine();
             if ("exit".equals(str)) {
                 System.out.println("ヾ(￣▽￣)Bye~Bye~");
                 break;
             } else {
                 if (str.length() == 0) {
-                    System.out.print("开始答题");
+                    System.out.println("开始答题");
                     System.out.println(COMMON_PATTERN.run());
                 }
             }

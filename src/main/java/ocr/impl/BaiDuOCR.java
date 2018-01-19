@@ -15,15 +15,25 @@ import java.util.HashMap;
  */
 public class BaiDuOCR implements OCR{
     //设置APPID/AK/SK
-    private static final String APP_ID = "10697064";
-    private static final String API_KEY = "Y2Dyel1bZwvsVRS00RZ9iBzh";
-    private static final String SECRET_KEY = "ED50nYFA3GbhM9AdyoZhC0qqweP9WjtY ";
+    private static String APP_ID = "10697064";
+    private static String API_KEY = "Y2Dyel1bZwvsVRS00RZ9iBzh";
+    private static String SECRET_KEY = "ED50nYFA3GbhM9AdyoZhC0qqweP9WjtY ";
     private static final AipOcr CLIENT=new AipOcr(APP_ID, API_KEY, SECRET_KEY);
+    public static void setAppId(String appId) {
+        APP_ID = appId;
+    }
+
+    public static void setApiKey(String apiKey) {
+        API_KEY = apiKey;
+    }
+
+    public static void setSecretKey(String secretKey) {
+        SECRET_KEY = secretKey;
+    }
     BaiDuOCR(){
         // 可选：设置网络连接参数
         CLIENT.setConnectionTimeoutInMillis(2000);
         CLIENT.setSocketTimeoutInMillis(60000);
-        System.out.println("欢迎您使用百度OCR进行文字识别");
     }
     @Override
     public String getOCR(File file) {
@@ -36,7 +46,10 @@ public class BaiDuOCR implements OCR{
             try {
                 throw new NoRemainingException("OCR可使用次数不足");
             } catch (NoRemainingException e) {
-                return "OCR可使用次数不足,您可使用TessOCR";
+                return "OCR可使用次数不足,请使用自己的OCR\n" +
+                        "获取方式见:\n" +
+                        "https://github.com/lingfengsan/MillionHero/wiki/Android操作步骤\n" +
+                        "或者您可选择使用TessOCR\n";
             }
         }
         System.out.println(res.toString());

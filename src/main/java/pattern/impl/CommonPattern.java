@@ -3,7 +3,6 @@ package pattern.impl;
 import ocr.OCR;
 import pattern.Pattern;
 import search.Search;
-import search.impl.BaiDuSearch;
 import search.impl.SearchFactory;
 import utils.ImageHelper;
 import utils.Information;
@@ -21,10 +20,10 @@ import java.util.concurrent.FutureTask;
  */
 public class CommonPattern implements Pattern {
     private static final String QUESTION_FLAG = "?";
-    private static int[] startX = {100, 80};
-    private static int[] startY = {300, 300};
-    private static int[] width = {900, 900};
-    private static int[] height = {900, 700};
+    private static int[] startX = {100,100, 80};
+    private static int[] startY = {300,300, 300};
+    private static int[] width = {900,900, 900};
+    private static int[] height = {900,900, 700};
     private ImageHelper imageHelper = new ImageHelper();
     private SearchFactory searchFactory=new SearchFactory();
     private int patterSelection;
@@ -47,6 +46,16 @@ public class CommonPattern implements Pattern {
     }
 
     public void setSearchSelection(int searchSelection) {
+        switch (searchSelection){
+            case 2:{
+                System.out.println("欢迎使用搜狗搜索");
+                break;
+            }
+            default:{
+                System.out.println("欢迎使用百度搜索");
+                break;
+            }
+        }
         this.searchSelection = searchSelection;
     }
 
@@ -77,6 +86,7 @@ public class CommonPattern implements Pattern {
         //图像识别
         Long beginOfDetect = System.currentTimeMillis();
         String questionAndAnswers = ocr.getOCR(new File(imagePath));
+        sb.append(questionAndAnswers);
         System.out.println("识别成功");
         System.out.println("识别时间：" + (System.currentTimeMillis() - beginOfDetect));
         if (questionAndAnswers == null || !questionAndAnswers.contains(QUESTION_FLAG)) {
@@ -107,7 +117,6 @@ public class CommonPattern implements Pattern {
         long[] countAnswer = new long[numOfAnswer];
 
         int maxIndex = 0;
-        Search searchQ = new BaiDuSearch((question), false);
         Search[] searchQA = new Search[numOfAnswer];
         Search[] searchAnswers = new Search[numOfAnswer];
         FutureTask[] futureQuestion = new FutureTask[1];
@@ -117,8 +126,8 @@ public class CommonPattern implements Pattern {
         futureQuestion[0]=new FutureTask<Long>(searchFactory.getSearch(searchSelection,question,true));
         new Thread(futureQuestion[0]).start();
         for (int i = 0; i < numOfAnswer; i++) {
-            searchQA[i] = searchFactory.getSearch(searchSelection,(question + " " + answers[i]),true);
-            searchAnswers[i] = searchFactory.getSearch(searchSelection,answers[i],true);
+            searchQA[i] = searchFactory.getSearch(searchSelection,(question + " " + answers[i]),false);
+            searchAnswers[i] = searchFactory.getSearch(searchSelection,answers[i],false);
 
             futureQA[i] = new FutureTask<Long>(searchQA[i]);
             futureAnswers[i] = new FutureTask<Long>(searchAnswers[i]);
