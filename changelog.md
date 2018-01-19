@@ -1,3 +1,6 @@
++ 2018-01-19
+  + 增加了搜狗搜索方式
+  + 优化了界面设置
 + 2018-01-15
   +  百度OCR功能上线，欢迎使用
   +  百度OCR的配置请前往[Android操作步骤](https://github.com/lingfengsan/MillionHero/wiki/Android%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4)
