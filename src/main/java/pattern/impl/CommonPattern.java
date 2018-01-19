@@ -3,7 +3,7 @@ package pattern.impl;
 import ocr.OCR;
 import pattern.Pattern;
 import search.Search;
-import search.impl.BaiDuSearch;
+import search.impl.SearchFactory;
 import utils.ImageHelper;
 import utils.Information;
 import utils.Utils;
@@ -14,28 +14,60 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 /**
- * Created by 618 on 2018/1/12.
+ * Created by lingfengsan on 2018/1/18.
  *
  * @author lingfengsan
  */
-public class MillionHeroPattern implements Pattern {
+public class CommonPattern implements Pattern {
     private static final String QUESTION_FLAG = "?";
-    private static final int START_X = 100;
-    private static final int START_Y = 300;
-    private static final int WIDTH = 900;
-    private static final int HEIGHT = 900;
-
-
+    private static int[] startX = {100,100, 80};
+    private static int[] startY = {300,300, 300};
+    private static int[] width = {900,900, 900};
+    private static int[] height = {900,900, 700};
+    private ImageHelper imageHelper = new ImageHelper();
+    private SearchFactory searchFactory=new SearchFactory();
+    private int patterSelection;
+    private int searchSelection;
     private OCR ocr;
     private Utils utils;
-    private ImageHelper imageHelper = new ImageHelper();
 
-    MillionHeroPattern(OCR ocr, Utils utils) {
-        System.out.println("欢迎您进入百万英雄游戏模式");
-        System.out.println("当题目出现后请按回车，程序运行");
+    public void setPatterSelection(int patterSelection) {
+        switch (patterSelection){
+            case 2:{
+                System.out.println("欢迎进入冲顶大会");
+                break;
+            }
+            default:{
+                System.out.println("欢迎进入百万英雄");
+                break;
+            }
+        }
+        this.patterSelection = patterSelection;
+    }
+
+    public void setSearchSelection(int searchSelection) {
+        switch (searchSelection){
+            case 2:{
+                System.out.println("欢迎使用搜狗搜索");
+                break;
+            }
+            default:{
+                System.out.println("欢迎使用百度搜索");
+                break;
+            }
+        }
+        this.searchSelection = searchSelection;
+    }
+
+    public void setOcr(OCR ocr) {
         this.ocr = ocr;
+    }
+
+    public void setUtils(Utils utils) {
         this.utils = utils;
     }
+
+
 
     @Override
     public String run() throws UnsupportedEncodingException {
@@ -43,17 +75,18 @@ public class MillionHeroPattern implements Pattern {
         long startTime;
         //       记录结束时间
         long endTime;
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         startTime = System.currentTimeMillis();
         //获取图片
         String imagePath = utils.getImage();
         System.out.println("图片获取成功");
         //裁剪图片
-        imageHelper.cutImage(imagePath,imagePath,START_X,START_Y,WIDTH,HEIGHT);
+        imageHelper.cutImage(imagePath, imagePath,
+                startX[patterSelection],startY[patterSelection], width[patterSelection], height[patterSelection]);
         //图像识别
         Long beginOfDetect = System.currentTimeMillis();
         String questionAndAnswers = ocr.getOCR(new File(imagePath));
-        sb.append(questionAndAnswers).append("\n");
+        sb.append(questionAndAnswers);
         System.out.println("识别成功");
         System.out.println("识别时间：" + (System.currentTimeMillis() - beginOfDetect));
         if (questionAndAnswers == null || !questionAndAnswers.contains(QUESTION_FLAG)) {
@@ -84,16 +117,17 @@ public class MillionHeroPattern implements Pattern {
         long[] countAnswer = new long[numOfAnswer];
 
         int maxIndex = 0;
-
         Search[] searchQA = new Search[numOfAnswer];
         Search[] searchAnswers = new Search[numOfAnswer];
+        FutureTask[] futureQuestion = new FutureTask[1];
         FutureTask[] futureQA = new FutureTask[numOfAnswer];
         FutureTask[] futureAnswers = new FutureTask[numOfAnswer];
-        FutureTask futureQuestion = new FutureTask<Long>(new BaiDuSearch(question, true));
-        new Thread(futureQuestion).start();
+
+        futureQuestion[0]=new FutureTask<Long>(searchFactory.getSearch(searchSelection,question,true));
+        new Thread(futureQuestion[0]).start();
         for (int i = 0; i < numOfAnswer; i++) {
-            searchQA[i] = new BaiDuSearch((question + " " + answers[i]), false);
-            searchAnswers[i] = new BaiDuSearch(answers[i], false);
+            searchQA[i] = searchFactory.getSearch(searchSelection,(question + " " + answers[i]),false);
+            searchAnswers[i] = searchFactory.getSearch(searchSelection,answers[i],false);
 
             futureQA[i] = new FutureTask<Long>(searchQA[i]);
             futureAnswers[i] = new FutureTask<Long>(searchAnswers[i]);
@@ -101,9 +135,9 @@ public class MillionHeroPattern implements Pattern {
             new Thread(futureAnswers[i]).start();
         }
         try {
-            while (!futureQuestion.isDone()) {
+            while (!futureQuestion[0].isDone()) {
             }
-            countQuestion = (Long) futureQuestion.get();
+            countQuestion = (Long) futureQuestion[0].get();
             for (int i = 0; i < numOfAnswer; i++) {
                 while (true) {
                     if (futureAnswers[i].isDone() && futureQA[i].isDone()) {

@@ -22,7 +22,6 @@ public class TessOCR implements OCR {
         instance.setLanguage("chi_sim");
         //Set the tessdata path
         instance.setDatapath(tessDataFolder.getAbsolutePath());
-        System.out.println("欢迎您使用TessOCR进行文字识别");
     }
 
     @Override
