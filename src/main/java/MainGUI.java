@@ -7,7 +7,7 @@ import utils.Utils;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
 /**
  * Created by lingfengsan on 2018/1/16.
@@ -28,10 +28,22 @@ public class MainGUI {
     private static JTextArea resultTextArea;
     private static JFrame frame = new JFrame("答题助手");
     private static final CommonPattern COMMON_PATTERN = new CommonPattern();
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Setting the width and height of frame
         frame.setSize(500, 800);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        String path=MainGUI.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+        path=path.substring(0,path.lastIndexOf("/"));
+        System.out.println(path);
+        File config = new File(path,  "hero.config");
+        System.out.println(config.getAbsolutePath());
+        if(config.createNewFile()){
+            FileOutputStream fileOutputStream=new FileOutputStream(config);
+            fileOutputStream.write("测试".getBytes());
+        }else{
+            System.out.println("nothing");
+        }
+        System.out.println(config.getAbsolutePath());
 
 //        创建面板
         JPanel panel = new JPanel();
@@ -144,9 +156,7 @@ public class MainGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Utils utils=new Utils(adbPathText.getText()+"\\adb",imagePathText.getText());
-
                 COMMON_PATTERN.setUtils(utils);
-
                 COMMON_PATTERN.setPatterSelection(patternSelection);
                 COMMON_PATTERN.setSearchSelection(searchSelection);
             }
