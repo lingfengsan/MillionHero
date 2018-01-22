@@ -1,5 +1,7 @@
 package utils;
 
+import pojo.Information;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;

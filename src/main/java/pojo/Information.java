@@ -1,4 +1,4 @@
-package utils;
+package pojo;
 
 import java.util.Arrays;
 
@@ -10,7 +10,7 @@ public class Information {
     private String question;
     private String[] ans;
 
-    Information(String question,String[] ans) {
+    public Information(String question, String[] ans) {
         this.question=question;
         this.ans=ans;
     }

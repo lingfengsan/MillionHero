@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Properties;
 
 /**
  * Created by lingfengsan on 2018/1/19.
@@ -20,6 +21,7 @@ public class BaiDuOCRSettingDialog {
     private static JTextField appIdText;
     private static JTextField apiKeyText;
     private static JTextField secretKeyText;
+    private static Properties heroProperties = new Properties();
 
 
     //构造函数
@@ -34,15 +36,12 @@ public class BaiDuOCRSettingDialog {
         addSetFinishButton();
         dialog.setVisible(true);
     }
-//    private static String APP_ID = "10697064";
-//    private static String API_KEY = "Y2Dyel1bZwvsVRS00RZ9iBzh";
-//    private static String SECRET_KEY = "ED50nYFA3GbhM9AdyoZhC0qqweP9WjtY ";
     //    创建文本域用于用户输入APP_ID
     private static void addAppId() {
         JLabel adbPathLabel = new JLabel("APP_ID：");
         adbPathLabel.setBounds(10, 20, 120, 25);
         dialogPane.add(adbPathLabel);
-        appIdText = new JTextField("10697064", 50);
+        appIdText = new JTextField(heroProperties.getProperty("APP_ID"), 50);
         appIdText.setBounds(130, 20, 250, 25);
         dialogPane.add(appIdText);
     }
@@ -51,7 +50,7 @@ public class BaiDuOCRSettingDialog {
         JLabel label = new JLabel("API_KEY：");
         label.setBounds(10, 50, 120, 25);
         dialogPane.add(label);
-        apiKeyText = new JTextField("Y2Dyel1bZwvsVRS00RZ9iBzh", 50);
+        apiKeyText = new JTextField(heroProperties.getProperty("API_KEY"), 50);
         apiKeyText.setBounds(130, 50, 250, 25);
         dialogPane.add(apiKeyText);
         System.out.println("test");
@@ -61,7 +60,7 @@ public class BaiDuOCRSettingDialog {
         JLabel label = new JLabel("SECRET_KEY：");
         label.setBounds(10, 80, 120, 25);
         dialogPane.add(label);
-        secretKeyText = new JTextField("ED50nYFA3GbhM9AdyoZhC0qqweP9WjtY", 50);
+        secretKeyText = new JTextField(heroProperties.getProperty("SECRET_KEY"), 50);
         secretKeyText.setBounds(130, 80, 250, 25);
         dialogPane.add(secretKeyText);
     }

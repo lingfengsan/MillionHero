@@ -5,7 +5,7 @@ import pattern.Pattern;
 import search.Search;
 import search.impl.SearchFactory;
 import utils.ImageHelper;
-import utils.Information;
+import pojo.Information;
 import utils.Utils;
 
 import java.io.File;
