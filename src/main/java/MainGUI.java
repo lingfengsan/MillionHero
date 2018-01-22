@@ -10,9 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.Scanner;
 
 /**
  * Created by lingfengsan on 2018/1/16.
@@ -163,7 +161,9 @@ public class MainGUI {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Utils utils = new Utils(adbPathText.getText() + "\\adb", imagePathText.getText());
+                Config.setAdbPath(adbPathText.getText());
+                Config.setPhotoPath(imagePathText.getText());
+                Utils utils = new Utils(Config.getAdbPath(), Config.getPhotoPath());
                 COMMON_PATTERN.setUtils(utils);
                 COMMON_PATTERN.setPatterSelection(patternSelection);
                 COMMON_PATTERN.setSearchSelection(searchSelection);
@@ -185,7 +185,7 @@ public class MainGUI {
                     System.out.println(result);
                     resultTextArea.setText(result);
                 } catch (UnsupportedEncodingException e1) {
-                    e1.printStackTrace();
+                    logger.error(e1.getMessage());
                 }
             }
         };
@@ -203,9 +203,9 @@ public class MainGUI {
         FileOutputStream fileOutputStream = new FileOutputStream("hero.properties", true);
         heroProperties.setProperty("ADB_PATH", "D:\\adb\\adb");
         heroProperties.setProperty("PHOTO_PATH", "D:\\Photo");
-        heroProperties.setProperty("APP_ID", "10697064");
-        heroProperties.setProperty("API_KEY", "Y2Dyel1bZwvsVRS00RZ9iBzh");
-        heroProperties.setProperty("SECRET_KEY", "ED50nYFA3GbhM9AdyoZhC0qqweP9WjtY");
+        heroProperties.setProperty("APP_ID", "APP_ID");
+        heroProperties.setProperty("API_KEY", "API_KEY");
+        heroProperties.setProperty("SECRET_KEY", "SECRET_KEY");
         heroProperties.store(fileOutputStream, "million hero properties");
         fileOutputStream.close();
     }
@@ -214,6 +214,7 @@ public class MainGUI {
         InputStream in = new BufferedInputStream(new FileInputStream("hero.properties"));
         heroProperties.load(in);
         for (String key : heroProperties.stringPropertyNames()) {
+            System.out.println(key+":"+heroProperties.getProperty(key));
             Config.set(key, heroProperties.getProperty(key));
         }
         in.close();

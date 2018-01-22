@@ -2,7 +2,6 @@ package pojo;
 
 /**
  * Created by lingfengsan on 2018/1/22.
- *
  * @author lingfengsan
  */
 public class Config {
@@ -52,17 +51,17 @@ public class Config {
         SECRET_KEY = secretKey;
     }
 
-    public static void set(String key,String value){
-        if("ADB_PATH".equals(key)){
-            adbPath=value;
-        }else if("PHOTO_PATH".equals(key)){
-            photoPath=value;
-        }else if("APP_ID".equals(key)){
-            APP_ID=value;
-        }else if("API_KEY".equals(key)){
-            API_KEY=value;
-        }else if("SECRET_KEY".equals(key)){
-            SECRET_KEY=value;
+    public static void set(String key, String value) {
+        if ("ADB_PATH".equals(key)) {
+            adbPath = value;
+        } else if ("PHOTO_PATH".equals(key)) {
+            photoPath = value;
+        } else if ("APP_ID".equals(key)) {
+            APP_ID = value;
+        } else if ("API_KEY".equals(key)) {
+            API_KEY = value;
+        } else if ("SECRET_KEY".equals(key)) {
+            SECRET_KEY = value;
         }
     }
 

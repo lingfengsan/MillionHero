@@ -27,7 +27,6 @@ public class ImageHelper {
      * @param y    图片起始点y坐标
      * @param w    图片宽度
      * @param h    图片高度
-     * @throws IOException 异常处理
      */
     public void cutImage(String src, String dest, int x, int y, int w, int h)  {
         try{

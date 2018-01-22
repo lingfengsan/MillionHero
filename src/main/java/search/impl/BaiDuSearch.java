@@ -19,7 +19,7 @@ public class BaiDuSearch implements Search {
     private Boolean needOpenBrowser;
     private String path;
 
-    public BaiDuSearch(String question, Boolean needOpenBrowser) {
+    BaiDuSearch(String question, Boolean needOpenBrowser) {
         try {
             this.needOpenBrowser = needOpenBrowser;
             this.path = "http://www.baidu.com/s?tn=ichuner&lm=-1&word=" +

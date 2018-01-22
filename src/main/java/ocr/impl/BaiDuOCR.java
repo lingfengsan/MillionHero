@@ -17,13 +17,16 @@ import java.util.HashMap;
 public class BaiDuOCR implements OCR{
     //设置APPID/AK/SK
     private static AipOcr CLIENT=new AipOcr(Config.getAppId(), Config.getApiKey(), Config.getSecretKey());
-    public BaiDuOCR(){
+    BaiDuOCR(){
         // 可选：设置网络连接参数
         CLIENT.setConnectionTimeoutInMillis(2000);
         CLIENT.setSocketTimeoutInMillis(60000);
     }
     @Override
     public String getOCR(File file) {
+        System.out.println(Config.getAppId());
+        System.out.println(Config.getApiKey());
+        System.out.println(Config.getSecretKey());
         Long start=System.currentTimeMillis();
         String path=file.getAbsolutePath();
         // 调用接口
@@ -48,7 +51,7 @@ public class BaiDuOCR implements OCR{
             sb.append(str);
             sb.append("\n");
         }
-        Long time=System.currentTimeMillis()-start;
+        Long time=(System.currentTimeMillis()-start)/1000;
         System.out.println("tessOCR提取信息成功，耗时："+time+"s");
         return sb.toString();
     }

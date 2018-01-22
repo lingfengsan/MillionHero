@@ -17,7 +17,7 @@ import java.net.URLEncoder;
 public class SoGouSearch implements Search{
     private Boolean needOpenBrowser;
     private String path;
-    public SoGouSearch(String question, Boolean needOpenBrowser)  {
+    SoGouSearch(String question, Boolean needOpenBrowser)  {
         try{
             this.needOpenBrowser = needOpenBrowser;
             this.path = "https://www.sogou.com/web?query=" +

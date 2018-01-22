@@ -1,6 +1,5 @@
 package gui;
 
-import ocr.impl.BaiDuOCR;
 import org.apache.log4j.Logger;
 import pojo.Config;
 
@@ -43,7 +42,7 @@ public class BaiDuOCRSettingDialog {
         JLabel adbPathLabel = new JLabel("APP_ID：");
         adbPathLabel.setBounds(10, 20, 120, 25);
         dialogPane.add(adbPathLabel);
-        appIdText = new JTextField(heroProperties.getProperty("APP_ID"), 50);
+        appIdText = new JTextField(Config.getAppId(), 50);
         appIdText.setBounds(130, 20, 250, 25);
         dialogPane.add(appIdText);
     }
@@ -52,7 +51,7 @@ public class BaiDuOCRSettingDialog {
         JLabel label = new JLabel("API_KEY：");
         label.setBounds(10, 50, 120, 25);
         dialogPane.add(label);
-        apiKeyText = new JTextField(heroProperties.getProperty("API_KEY"), 50);
+        apiKeyText = new JTextField(Config.getApiKey(), 50);
         apiKeyText.setBounds(130, 50, 250, 25);
         dialogPane.add(apiKeyText);
         System.out.println("test");
@@ -62,7 +61,7 @@ public class BaiDuOCRSettingDialog {
         JLabel label = new JLabel("SECRET_KEY：");
         label.setBounds(10, 80, 120, 25);
         dialogPane.add(label);
-        secretKeyText = new JTextField(heroProperties.getProperty("SECRET_KEY"), 50);
+        secretKeyText = new JTextField(Config.getSecretKey(), 50);
         secretKeyText.setBounds(130, 80, 250, 25);
         dialogPane.add(secretKeyText);
     }
@@ -75,6 +74,8 @@ public class BaiDuOCRSettingDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Config.setApiKey(apiKeyText.getText());
+                Config.setAppId(appIdText.getText());
+                Config.setSecretKey(secretKeyText.getText());
                 try {
                     storeOcrConfig();
                 } catch (IOException e1) {
@@ -86,10 +87,12 @@ public class BaiDuOCRSettingDialog {
         setFinishButton.addActionListener(listener);
     }
     private static void storeOcrConfig() throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream("hero.properties", true);
+        FileOutputStream fileOutputStream = new FileOutputStream("hero.properties", false);
         heroProperties.setProperty("APP_ID", Config.getAppId());
         heroProperties.setProperty("API_KEY", Config.getApiKey());
         heroProperties.setProperty("SECRET_KEY",Config.getSecretKey());
+        heroProperties.setProperty("ADB_PATH", Config.getAdbPath());
+        heroProperties.setProperty("PHOTO_PATH", Config.getPhotoPath());
         heroProperties.store(fileOutputStream, "million hero properties");
         fileOutputStream.close();
     }
