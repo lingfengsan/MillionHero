@@ -1,13 +1,15 @@
 package gui;
 
-import ocr.OCR;
-import ocr.impl.BaiDuOCR;
-import utils.Utils;
+import org.apache.log4j.Logger;
+import pojo.Config;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Created by lingfengsan on 2018/1/19.
@@ -20,7 +22,8 @@ public class BaiDuOCRSettingDialog {
     private static JTextField appIdText;
     private static JTextField apiKeyText;
     private static JTextField secretKeyText;
-
+    private static Properties heroProperties = new Properties();
+    private static Logger logger = Logger.getLogger(BaiDuOCRSettingDialog.class);
 
     //构造函数
     public BaiDuOCRSettingDialog(JFrame f){
@@ -34,15 +37,12 @@ public class BaiDuOCRSettingDialog {
         addSetFinishButton();
         dialog.setVisible(true);
     }
-//    private static String APP_ID = "10697064";
-//    private static String API_KEY = "Y2Dyel1bZwvsVRS00RZ9iBzh";
-//    private static String SECRET_KEY = "ED50nYFA3GbhM9AdyoZhC0qqweP9WjtY ";
     //    创建文本域用于用户输入APP_ID
     private static void addAppId() {
         JLabel adbPathLabel = new JLabel("APP_ID：");
         adbPathLabel.setBounds(10, 20, 120, 25);
         dialogPane.add(adbPathLabel);
-        appIdText = new JTextField("10697064", 50);
+        appIdText = new JTextField(Config.getAppId(), 50);
         appIdText.setBounds(130, 20, 250, 25);
         dialogPane.add(appIdText);
     }
@@ -51,7 +51,7 @@ public class BaiDuOCRSettingDialog {
         JLabel label = new JLabel("API_KEY：");
         label.setBounds(10, 50, 120, 25);
         dialogPane.add(label);
-        apiKeyText = new JTextField("Y2Dyel1bZwvsVRS00RZ9iBzh", 50);
+        apiKeyText = new JTextField(Config.getApiKey(), 50);
         apiKeyText.setBounds(130, 50, 250, 25);
         dialogPane.add(apiKeyText);
         System.out.println("test");
@@ -61,7 +61,7 @@ public class BaiDuOCRSettingDialog {
         JLabel label = new JLabel("SECRET_KEY：");
         label.setBounds(10, 80, 120, 25);
         dialogPane.add(label);
-        secretKeyText = new JTextField("ED50nYFA3GbhM9AdyoZhC0qqweP9WjtY", 50);
+        secretKeyText = new JTextField(Config.getSecretKey(), 50);
         secretKeyText.setBounds(130, 80, 250, 25);
         dialogPane.add(secretKeyText);
     }
@@ -73,12 +73,27 @@ public class BaiDuOCRSettingDialog {
         ActionListener listener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BaiDuOCR.setApiKey(apiKeyText.getText());
-                BaiDuOCR.setAppId(appIdText.getText());
-                BaiDuOCR.setSecretKey(secretKeyText.getText());
+                Config.setApiKey(apiKeyText.getText());
+                Config.setAppId(appIdText.getText());
+                Config.setSecretKey(secretKeyText.getText());
+                try {
+                    storeOcrConfig();
+                } catch (IOException e1) {
+                    logger.error("存储配置失败");
+                }
                 dialog.setVisible(false);
             }
         };
         setFinishButton.addActionListener(listener);
+    }
+    private static void storeOcrConfig() throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream("hero.properties", false);
+        heroProperties.setProperty("APP_ID", Config.getAppId());
+        heroProperties.setProperty("API_KEY", Config.getApiKey());
+        heroProperties.setProperty("SECRET_KEY",Config.getSecretKey());
+        heroProperties.setProperty("ADB_PATH", Config.getAdbPath());
+        heroProperties.setProperty("PHOTO_PATH", Config.getPhotoPath());
+        heroProperties.store(fileOutputStream, "million hero properties");
+        fileOutputStream.close();
     }
 }

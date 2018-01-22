@@ -6,3 +6,4 @@ target
 /src/resource/tessdata/
 /src/resource/adb/
 .DS_Store
+/hero.properties
