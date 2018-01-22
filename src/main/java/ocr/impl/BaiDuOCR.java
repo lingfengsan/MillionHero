@@ -5,6 +5,7 @@ import exception.NoRemainingException;
 import ocr.OCR;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import pojo.Config;
 
 import java.io.File;
 import java.util.HashMap;
@@ -15,22 +16,8 @@ import java.util.HashMap;
  */
 public class BaiDuOCR implements OCR{
     //设置APPID/AK/SK
-    private static String APP_ID = "10697064";
-    private static String API_KEY = "Y2Dyel1bZwvsVRS00RZ9iBzh";
-    private static String SECRET_KEY = "ED50nYFA3GbhM9AdyoZhC0qqweP9WjtY ";
-    private static final AipOcr CLIENT=new AipOcr(APP_ID, API_KEY, SECRET_KEY);
-    public static void setAppId(String appId) {
-        APP_ID = appId;
-    }
-
-    public static void setApiKey(String apiKey) {
-        API_KEY = apiKey;
-    }
-
-    public static void setSecretKey(String secretKey) {
-        SECRET_KEY = secretKey;
-    }
-    BaiDuOCR(){
+    private static AipOcr CLIENT=new AipOcr(Config.getAppId(), Config.getApiKey(), Config.getSecretKey());
+    public BaiDuOCR(){
         // 可选：设置网络连接参数
         CLIENT.setConnectionTimeoutInMillis(2000);
         CLIENT.setSocketTimeoutInMillis(60000);

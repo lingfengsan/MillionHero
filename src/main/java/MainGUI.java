@@ -99,10 +99,10 @@ public class MainGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ocrSelection = selection;
-                OCR ocr = OCR_FACTORY.getOcr(ocrSelection);
                 if (selection == 2) {
                     new BaiDuOCRSettingDialog(frame);
                 }
+                OCR ocr = OCR_FACTORY.getOcr(ocrSelection);
                 COMMON_PATTERN.setOcr(ocr);
             }
         };

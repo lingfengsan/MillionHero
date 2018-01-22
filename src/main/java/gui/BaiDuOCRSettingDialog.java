@@ -1,13 +1,15 @@
 package gui;
 
-import ocr.OCR;
 import ocr.impl.BaiDuOCR;
-import utils.Utils;
+import org.apache.log4j.Logger;
+import pojo.Config;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -22,7 +24,7 @@ public class BaiDuOCRSettingDialog {
     private static JTextField apiKeyText;
     private static JTextField secretKeyText;
     private static Properties heroProperties = new Properties();
-
+    private static Logger logger = Logger.getLogger(BaiDuOCRSettingDialog.class);
 
     //构造函数
     public BaiDuOCRSettingDialog(JFrame f){
@@ -72,12 +74,23 @@ public class BaiDuOCRSettingDialog {
         ActionListener listener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BaiDuOCR.setApiKey(apiKeyText.getText());
-                BaiDuOCR.setAppId(appIdText.getText());
-                BaiDuOCR.setSecretKey(secretKeyText.getText());
+                Config.setApiKey(apiKeyText.getText());
+                try {
+                    storeOcrConfig();
+                } catch (IOException e1) {
+                    logger.error("存储配置失败");
+                }
                 dialog.setVisible(false);
             }
         };
         setFinishButton.addActionListener(listener);
+    }
+    private static void storeOcrConfig() throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream("hero.properties", true);
+        heroProperties.setProperty("APP_ID", Config.getAppId());
+        heroProperties.setProperty("API_KEY", Config.getApiKey());
+        heroProperties.setProperty("SECRET_KEY",Config.getSecretKey());
+        heroProperties.store(fileOutputStream, "million hero properties");
+        fileOutputStream.close();
     }
 }
