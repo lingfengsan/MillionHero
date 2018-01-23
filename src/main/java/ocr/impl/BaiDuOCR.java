@@ -16,7 +16,7 @@ import java.util.HashMap;
  */
 public class BaiDuOCR implements OCR{
     //设置APPID/AK/SK
-    private static AipOcr CLIENT=new AipOcr(Config.getAppId(), Config.getApiKey(), Config.getSecretKey());
+    private static AipOcr CLIENT=new AipOcr(Config.getAppId().trim(), Config.getApiKey().trim(), Config.getSecretKey().trim());
     BaiDuOCR(){
         // 可选：设置网络连接参数
         CLIENT.setConnectionTimeoutInMillis(2000);
