@@ -15,13 +15,17 @@ import java.util.HashMap;
  * @author lingfengsan
  */
 public class BaiDuOCR implements OCR{
-    //设置APPID/AK/SK
-    private static AipOcr CLIENT=new AipOcr(Config.getAppId().trim(), Config.getApiKey().trim(), Config.getSecretKey().trim());
+    private static AipOcr client;
     BaiDuOCR(){
         // 可选：设置网络连接参数
-        CLIENT.setConnectionTimeoutInMillis(2000);
-        CLIENT.setSocketTimeoutInMillis(60000);
+        client.setConnectionTimeoutInMillis(2000);
+        client.setSocketTimeoutInMillis(60000);
     }
+
+    public static void setClient(AipOcr client) {
+        BaiDuOCR.client = client;
+    }
+
     @Override
     public String getOCR(File file) {
         System.out.println(Config.getAppId());
@@ -30,7 +34,7 @@ public class BaiDuOCR implements OCR{
         Long start=System.currentTimeMillis();
         String path=file.getAbsolutePath();
         // 调用接口
-        JSONObject res = CLIENT.basicGeneral(path, new HashMap<String, String>());
+        JSONObject res = client.basicGeneral(path, new HashMap<String, String>());
         String searchResult=res.toString();
         if(searchResult.contains("error_msg")){
             try {
@@ -62,4 +66,6 @@ public class BaiDuOCR implements OCR{
         String result=ocr.getOCR(new File(path));
         System.out.println(result);
     }
+
+
 }

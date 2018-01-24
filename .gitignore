@@ -7,3 +7,5 @@ target
 /src/resource/adb/
 .DS_Store
 /hero.properties
+/src/main/java/utils/TestSomething.java
+/src/main/resources/chromedriver.exe

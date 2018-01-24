@@ -8,5 +8,4 @@ import java.util.concurrent.Callable;
  * @author lingfengsan
  */
 public interface Similarity extends Callable{
-    float calculateSimilarity(String question,String answer);
 }

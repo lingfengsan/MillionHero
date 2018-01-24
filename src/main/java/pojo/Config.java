@@ -10,6 +10,17 @@ public class Config {
     private static String APP_ID;
     private static String API_KEY;
     private static String SECRET_KEY;
+    private static int searchSelection;
+
+    public static int getSearchSelection() {
+        return searchSelection;
+    }
+
+    public static void setSearchSelection(int searchSelection) {
+        Config.searchSelection = searchSelection;
+    }
+
+
 
     public static String getAdbPath() {
         return adbPath;

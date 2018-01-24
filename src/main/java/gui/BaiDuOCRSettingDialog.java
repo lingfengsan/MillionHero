@@ -1,7 +1,10 @@
 package gui;
 
+import com.baidu.aip.ocr.AipOcr;
+import ocr.impl.BaiDuOCR;
 import org.apache.log4j.Logger;
 import pojo.Config;
+import utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +28,10 @@ public class BaiDuOCRSettingDialog {
     private static Properties heroProperties = new Properties();
     private static Logger logger = Logger.getLogger(BaiDuOCRSettingDialog.class);
 
-    //构造函数
+    /**
+     *
+     * @param f 设置OCR界面
+     */
     public BaiDuOCRSettingDialog(JFrame f){
         dialog = new JDialog(f, "输入",true);
         dialog.setBounds(20,200,400,220);
@@ -37,7 +43,10 @@ public class BaiDuOCRSettingDialog {
         addSetFinishButton();
         dialog.setVisible(true);
     }
-    //    创建文本域用于用户输入APP_ID
+
+    /**
+     * 创建文本域用于用户输入APP_ID
+     */
     private static void addAppId() {
         JLabel adbPathLabel = new JLabel("APP_ID：");
         adbPathLabel.setBounds(10, 20, 120, 25);
@@ -46,7 +55,9 @@ public class BaiDuOCRSettingDialog {
         appIdText.setBounds(130, 20, 250, 25);
         dialogPane.add(appIdText);
     }
-    //    创建文本域用于用户输入API_KEY
+    /**
+     * 创建文本域用于用户输入API_KEY
+     */
     private static void addApiKey() {
         JLabel label = new JLabel("API_KEY：");
         label.setBounds(10, 50, 120, 25);
@@ -56,7 +67,10 @@ public class BaiDuOCRSettingDialog {
         dialogPane.add(apiKeyText);
         System.out.println("test");
     }
-    //    创建文本域用于用户输入SECRET_KEY
+
+    /**
+     * 创建文本域用于用户输入SECRET_KEY
+      */
     private static void addSecretKey() {
         JLabel label = new JLabel("SECRET_KEY：");
         label.setBounds(10, 80, 120, 25);
@@ -65,7 +79,10 @@ public class BaiDuOCRSettingDialog {
         secretKeyText.setBounds(130, 80, 250, 25);
         dialogPane.add(secretKeyText);
     }
-    //增加设置完成按钮
+
+    /**
+     * 增加设置完成按钮
+     */
     private static void addSetFinishButton(){
         final JButton setFinishButton=new JButton("设置完成");
         setFinishButton.setBounds(160, 110, 100, 25);
@@ -77,7 +94,10 @@ public class BaiDuOCRSettingDialog {
                 Config.setAppId(appIdText.getText());
                 Config.setSecretKey(secretKeyText.getText());
                 try {
-                    storeOcrConfig();
+                    Utils.storeConfig();
+                    AipOcr ocrClient=new AipOcr(Config.getAppId().trim(),
+                            Config.getApiKey().trim(), Config.getSecretKey().trim());
+                    BaiDuOCR.setClient(ocrClient);
                 } catch (IOException e1) {
                     logger.error("存储配置失败");
                 }
@@ -85,15 +105,5 @@ public class BaiDuOCRSettingDialog {
             }
         };
         setFinishButton.addActionListener(listener);
-    }
-    private static void storeOcrConfig() throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream("hero.properties", false);
-        heroProperties.setProperty("APP_ID", Config.getAppId());
-        heroProperties.setProperty("API_KEY", Config.getApiKey());
-        heroProperties.setProperty("SECRET_KEY",Config.getSecretKey());
-        heroProperties.setProperty("ADB_PATH", Config.getAdbPath());
-        heroProperties.setProperty("PHOTO_PATH", Config.getPhotoPath());
-        heroProperties.store(fileOutputStream, "million hero properties");
-        fileOutputStream.close();
     }
 }

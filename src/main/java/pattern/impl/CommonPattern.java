@@ -4,6 +4,8 @@ import ocr.OCR;
 import pattern.Pattern;
 import search.Search;
 import search.impl.SearchFactory;
+import similarity.Similarity;
+import similarity.impl.SimilarityFactory;
 import utils.ImageHelper;
 import pojo.Information;
 import utils.Utils;
@@ -110,61 +112,46 @@ public class CommonPattern implements Pattern {
         for (String answer : answers) {
             sb.append(answer).append("\n");
         }
-        //搜索
+        //求相关性
         long countQuestion = 1;
         int numOfAnswer = answers.length > 3 ? 4 : answers.length;
-        long[] countQA = new long[numOfAnswer];
-        long[] countAnswer = new long[numOfAnswer];
+        float[] result=new float[numOfAnswer];
+        Similarity[] similarities= new Similarity[numOfAnswer];
+        FutureTask[] futureTasks=new FutureTask[numOfAnswer];
+        for (int i = 0; i < numOfAnswer; i++) {
+            similarities[i]=SimilarityFactory.getSimlarity(1,question,answers[i]);
+            futureTasks[i]=new FutureTask<Double>(similarities[i]);
+            new Thread(futureTasks[i]).start();
+        }
+        for (int i = 0; i < numOfAnswer; i++) {
+            while (true){
+                if(futureTasks[i].isDone()){
+                    break;
+                }
+            }
+            try {
+                result[i]= (Float) futureTasks[i].get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        //搜索
 
         int maxIndex = 0;
-        Search[] searchQA = new Search[numOfAnswer];
-        Search[] searchAnswers = new Search[numOfAnswer];
         FutureTask[] futureQuestion = new FutureTask[1];
-        FutureTask[] futureQA = new FutureTask[numOfAnswer];
-        FutureTask[] futureAnswers = new FutureTask[numOfAnswer];
 
         futureQuestion[0]=new FutureTask<Long>(searchFactory.getSearch(searchSelection,question,true));
         new Thread(futureQuestion[0]).start();
-        for (int i = 0; i < numOfAnswer; i++) {
-            searchQA[i] = searchFactory.getSearch(searchSelection,(question + " " + answers[i]),false);
-            searchAnswers[i] = searchFactory.getSearch(searchSelection,answers[i],false);
 
-            futureQA[i] = new FutureTask<Long>(searchQA[i]);
-            futureAnswers[i] = new FutureTask<Long>(searchAnswers[i]);
-            new Thread(futureQA[i]).start();
-            new Thread(futureAnswers[i]).start();
-        }
-        try {
-            while (!futureQuestion[0].isDone()) {
-            }
-            countQuestion = (Long) futureQuestion[0].get();
-            for (int i = 0; i < numOfAnswer; i++) {
-                while (true) {
-                    if (futureAnswers[i].isDone() && futureQA[i].isDone()) {
-                        break;
-                    }
-                }
-                countQA[i] = (Long) futureQA[i].get();
-                countAnswer[i] = (Long) futureAnswers[i].get();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        float[] ans = new float[numOfAnswer];
-        for (int i = 0; i < numOfAnswer; i++) {
-            ans[i] = (float) countQA[i] / (float) (countQuestion * countAnswer[i]);
-            maxIndex = (ans[i] > ans[maxIndex]) ? i : maxIndex;
-        }
+
         //根据pmi值进行打印搜索结果
-        int[] rank = Utils.rank(ans);
+        int[] rank = Utils.rank(result);
         for (int i : rank) {
 
             sb.append(answers[i]);
-            sb.append(" countQA:").append(countQA[i]);
-            sb.append(" countAnswer:").append(countAnswer[i]);
-            sb.append(" ans:").append(ans[i]).append("\n");
+            sb.append(" 相似度:").append(result[i]).append("\n");
         }
 
         sb.append("--------最终结果-------\n");

@@ -1,9 +1,11 @@
 package utils;
 
+import pojo.Config;
 import pojo.Information;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +14,7 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Properties;
 
 /**
  * Created by lingfengsan on 2018/1/12.
@@ -26,6 +29,7 @@ public class Utils {
     private String adbPath;
     private String imagePath;
     private static final Long MIN_IMAGE_SIZE = 1000L;
+    private static Properties heroProperties = new Properties();
     public Utils(){}
     public Utils(String adbPath, String imagePath) {
         this.adbPath = adbPath;
@@ -129,7 +133,26 @@ public class Utils {
         }
         return rank;
     }
-
+    public static void storeConfig() throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream("hero.properties", false);
+        heroProperties.setProperty("APP_ID", Config.getAppId());
+        heroProperties.setProperty("API_KEY", Config.getApiKey());
+        heroProperties.setProperty("SECRET_KEY",Config.getSecretKey());
+        heroProperties.setProperty("ADB_PATH", Config.getAdbPath());
+        heroProperties.setProperty("PHOTO_PATH", Config.getPhotoPath());
+        heroProperties.store(fileOutputStream, "million hero properties");
+        fileOutputStream.close();
+    }
+    public static void initialConfig() throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream("hero.properties", true);
+        heroProperties.setProperty("ADB_PATH", "D:\\adb\\adb");
+        heroProperties.setProperty("PHOTO_PATH", "D:\\Photo");
+        heroProperties.setProperty("APP_ID", "APP_ID");
+        heroProperties.setProperty("API_KEY", "API_KEY");
+        heroProperties.setProperty("SECRET_KEY", "SECRET_KEY");
+        heroProperties.store(fileOutputStream, "million hero properties");
+        fileOutputStream.close();
+    }
     public static void main(String[] args) {
         String adb = "D:\\software\\Android\\android-sdk\\platform-tools\\adb";
         String imagePath = "D:\\Photo";
