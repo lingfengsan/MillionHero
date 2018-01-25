@@ -16,7 +16,7 @@ public class BaiDuSimilarity implements Similarity {
     //设置APPID/AK/SK
 //    private AipNlp client = new AipNlp(NlpConfig.getAppId(),
 //            NlpConfig.getApiKey(),NlpConfig.getSecretKey());
-    private AipNlp client;
+    private static AipNlp client;
     private String question;
     private String answer;
     BaiDuSimilarity(String question,String answer){
@@ -34,6 +34,7 @@ public class BaiDuSimilarity implements Similarity {
         JSONObject res = client.simnet(question, answer, options);
         float time = (System.currentTimeMillis() - start) / 1000f;
         double score = res.getDouble("score");
+        System.out.println(answer+score);
         System.out.println("短文本相似度处理时间" + time);
         return score;
     }
@@ -46,7 +47,7 @@ public class BaiDuSimilarity implements Similarity {
         System.out.println(score);
     }
 
-    public void setClient(AipNlp client) {
-        this.client = client;
+    public static void setClient(AipNlp client) {
+        BaiDuSimilarity.client=client;
     }
 }

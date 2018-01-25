@@ -1,4 +1,5 @@
 import gui.BaiDuOCRSettingDialog;
+import gui.BaiduNlpSettingDialog;
 import ocr.OCR;
 import ocr.impl.OCRFactory;
 import org.apache.log4j.Logger;
@@ -25,7 +26,7 @@ public class MainGUI {
     private static ButtonGroup ocrSelectionButton = new ButtonGroup();
     private static ButtonGroup searchSelectionButton = new ButtonGroup();
     private static ButtonGroup patternSelectionButton = new ButtonGroup();
-    private static int ocrSelection = 1;
+    private static ButtonGroup similaritySelectionButton = new ButtonGroup();
     private static int patternSelection = 1;
     private static int searchSelection = 1;
     private static JTextArea resultTextArea;
@@ -38,11 +39,11 @@ public class MainGUI {
         frame.setSize(500, 800);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         try{
-            loadConfig();
+            Utils.loadConfig();
         }catch (Exception e){
             Utils.initialConfig();
         }
-        loadConfig();
+        Utils.loadConfig();
 //        创建面板
         JPanel panel = new JPanel();
         frame.add(panel);
@@ -53,6 +54,7 @@ public class MainGUI {
         addSearchSelection(panel);
         addSetFinishButton(panel);
         addRunButton(panel);
+        addSimilaritySelection(panel);
         addResultTextArea(panel);
         addPatternSelection(panel);
         // 设置界面可见
@@ -79,7 +81,10 @@ public class MainGUI {
         panel.add(imagePathText);
     }
 
-    //         创建OCR选择
+    /**
+     * 创建OCR选择
+     * @param panel 创建OCR选择
+     */
     private static void addOCRSelection(JPanel panel) {
         JLabel ocrSelectionLabel = new JLabel("OCR方式：");
         ocrSelectionLabel.setBounds(10, 70, 100, 25);
@@ -96,15 +101,41 @@ public class MainGUI {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ocrSelection = selection;
                 if (selection == 2) {
                     new BaiDuOCRSettingDialog(frame);
                 }
-                OCR ocr = OCR_FACTORY.getOcr(ocrSelection);
+                OCR ocr = OCR_FACTORY.getOcr(selection);
                 COMMON_PATTERN.setOcr(ocr);
             }
         };
         ocrButton.addActionListener(listener);
+    }
+    /**
+     * 创建相似度选择
+     * @param panel 创建相似度选择
+     */
+    private static void addSimilaritySelection(JPanel panel) {
+        JLabel similaritySelectionLabel = new JLabel("相似度方式：");
+        similaritySelectionLabel.setBounds(10, 145, 100, 25);
+        addSimilaritySelection(panel, 100, "PMI", 1);
+        addSimilaritySelection(panel, 300, "百度Nlp", 2);
+        panel.add(similaritySelectionLabel);
+    }
+
+    private static void addSimilaritySelection(JPanel panel, int x, String text, final int selection) {
+        final JRadioButton jRadioButton = new JRadioButton(text);
+        jRadioButton.setBounds(x, 145, 165, 25);
+        similaritySelectionButton.add(jRadioButton);
+        panel.add(jRadioButton);
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selection == 2) {
+                    new BaiduNlpSettingDialog(frame);
+                }
+            }
+        };
+        jRadioButton.addActionListener(listener);
     }
 
     /**
@@ -165,13 +196,18 @@ public class MainGUI {
      */
     private static void addSetFinishButton(JPanel panel) {
         final JButton setFinishButton = new JButton("设置完成");
-        setFinishButton.setBounds(40, 145, 120, 25);
+        setFinishButton.setBounds(40, 170, 120, 25);
         panel.add(setFinishButton);
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Config.setAdbPath(adbPathText.getText());
                 Config.setPhotoPath(imagePathText.getText());
+                try {
+                    Utils.storeConfig();
+                } catch (IOException e1) {
+                    logger.error("存储配置信息失败");
+                }
                 Utils utils = new Utils(Config.getAdbPath(), Config.getPhotoPath());
                 COMMON_PATTERN.setUtils(utils);
                 COMMON_PATTERN.setPatterSelection(patternSelection);
@@ -187,7 +223,7 @@ public class MainGUI {
      */
     private static void addRunButton(JPanel panel) {
         final JButton runButton = new JButton("获取答案");
-        runButton.setBounds(160, 145, 120, 25);
+        runButton.setBounds(160, 170, 120, 25);
         panel.add(runButton);
         ActionListener listener = new ActionListener() {
             @Override
@@ -210,20 +246,12 @@ public class MainGUI {
      */
     private static void addResultTextArea(JPanel panel) {
         resultTextArea = new JTextArea();
-        resultTextArea.setBounds(10, 170, 400, 400);
+        resultTextArea.setBounds(10, 195, 400, 400);
         panel.add(resultTextArea);
     }
 
 
-    private static void loadConfig() throws IOException {
-        InputStream in = new BufferedInputStream(new FileInputStream("hero.properties"));
-        heroProperties.load(in);
-        for (String key : heroProperties.stringPropertyNames()) {
-            System.out.println(key+":"+heroProperties.getProperty(key));
-            Config.set(key, heroProperties.getProperty(key));
-        }
-        in.close();
-    }
+
 
 
 }

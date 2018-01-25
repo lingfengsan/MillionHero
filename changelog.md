@@ -1,3 +1,5 @@
++ 2018-01-25
+  + 增加百度短文本识别API，欢迎尝试[短文本相似度](https://console.bce.baidu.com/ai/#/ai/nlp/overview/index)，请去该链接申请该服务
 + 2018-01-24
   + 不在支持命令行模式，请运行MainGUI
 + 2018-01-22

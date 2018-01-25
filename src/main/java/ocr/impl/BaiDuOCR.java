@@ -6,8 +6,10 @@ import ocr.OCR;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pojo.Config;
+import utils.Utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -16,11 +18,6 @@ import java.util.HashMap;
  */
 public class BaiDuOCR implements OCR{
     private static AipOcr client;
-    BaiDuOCR(){
-        // 可选：设置网络连接参数
-        client.setConnectionTimeoutInMillis(2000);
-        client.setSocketTimeoutInMillis(60000);
-    }
 
     public static void setClient(AipOcr client) {
         BaiDuOCR.client = client;
@@ -60,9 +57,12 @@ public class BaiDuOCR implements OCR{
         return sb.toString();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         OCR ocr=new BaiDuOCR();
-        String path = "D:\\Photo\\20180114002647.png";
+        Utils.loadConfig();
+        client=new AipOcr(Config.getAppId().trim(),
+                Config.getApiKey().trim(), Config.getSecretKey().trim());
+        String path = "D:\\Photo\\123.png";
         String result=ocr.getOCR(new File(path));
         System.out.println(result);
     }

@@ -33,6 +33,7 @@ public class PmiSimilarity implements Similarity {
                 , answer, false);
         for (int i = 0; i < searches.length; i++) {
             futureTasks[i] = new FutureTask<Long>(searches[i]);
+            new Thread(futureTasks[i]).start();
         }
         while (true) {
             if (futureTasks[0].isDone() && futureTasks[1].isDone()) {
@@ -42,6 +43,7 @@ public class PmiSimilarity implements Similarity {
         try {
             Long countQA=(Long)futureTasks[0].get();
             Long countA=(Long)futureTasks[1].get();
+            System.out.println(answer+(double)countQA/(double)countA);
             return (double)countQA/(double)countA;
         } catch (InterruptedException e) {
             e.printStackTrace();

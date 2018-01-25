@@ -1,10 +1,11 @@
 package pattern.impl;
 
+import com.baidu.aip.nlp.AipNlp;
 import ocr.OCR;
 import pattern.Pattern;
-import search.Search;
 import search.impl.SearchFactory;
 import similarity.Similarity;
+import similarity.impl.BaiDuSimilarity;
 import similarity.impl.SimilarityFactory;
 import utils.ImageHelper;
 import pojo.Information;
@@ -34,30 +35,10 @@ public class CommonPattern implements Pattern {
     private Utils utils;
 
     public void setPatterSelection(int patterSelection) {
-        switch (patterSelection){
-            case 2:{
-                System.out.println("欢迎进入冲顶大会");
-                break;
-            }
-            default:{
-                System.out.println("欢迎进入百万英雄");
-                break;
-            }
-        }
         this.patterSelection = patterSelection;
     }
 
     public void setSearchSelection(int searchSelection) {
-        switch (searchSelection){
-            case 2:{
-                System.out.println("欢迎使用搜狗搜索");
-                break;
-            }
-            default:{
-                System.out.println("欢迎使用百度搜索");
-                break;
-            }
-        }
         this.searchSelection = searchSelection;
     }
 
@@ -113,13 +94,14 @@ public class CommonPattern implements Pattern {
             sb.append(answer).append("\n");
         }
         //求相关性
-        long countQuestion = 1;
         int numOfAnswer = answers.length > 3 ? 4 : answers.length;
-        float[] result=new float[numOfAnswer];
+        double[] result=new double[numOfAnswer];
         Similarity[] similarities= new Similarity[numOfAnswer];
         FutureTask[] futureTasks=new FutureTask[numOfAnswer];
+        BaiDuSimilarity.setClient(new AipNlp("10732092","pdAtmzlooEbrcfYG4l0kIluf",
+                "sHjPBnKt58crPuFogTgQ5Wki0TrHYO2c"));
         for (int i = 0; i < numOfAnswer; i++) {
-            similarities[i]=SimilarityFactory.getSimlarity(1,question,answers[i]);
+            similarities[i]=SimilarityFactory.getSimlarity(2,question,answers[i]);
             futureTasks[i]=new FutureTask<Double>(similarities[i]);
             new Thread(futureTasks[i]).start();
         }
@@ -130,7 +112,7 @@ public class CommonPattern implements Pattern {
                 }
             }
             try {
-                result[i]= (Float) futureTasks[i].get();
+                result[i]=  (Double) futureTasks[i].get();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -139,9 +121,7 @@ public class CommonPattern implements Pattern {
         }
         //搜索
 
-        int maxIndex = 0;
         FutureTask[] futureQuestion = new FutureTask[1];
-
         futureQuestion[0]=new FutureTask<Long>(searchFactory.getSearch(searchSelection,question,true));
         new Thread(futureQuestion[0]).start();
 
@@ -149,13 +129,12 @@ public class CommonPattern implements Pattern {
         //根据pmi值进行打印搜索结果
         int[] rank = Utils.rank(result);
         for (int i : rank) {
-
             sb.append(answers[i]);
-            sb.append(" 相似度:").append(result[i]).append("\n");
+            sb.append(" 相似度为:").append(result[i]).append("\n");
         }
 
         sb.append("--------最终结果-------\n");
-        sb.append(answers[maxIndex]);
+        sb.append(answers[rank[rank.length-1]]);
         endTime = System.currentTimeMillis();
         float excTime = (float) (endTime - startTime) / 1000;
 

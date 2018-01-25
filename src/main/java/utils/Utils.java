@@ -4,10 +4,7 @@ import pojo.Config;
 import pojo.Information;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -120,9 +117,9 @@ public class Utils {
      * @param floats pmi值
      * @return 返回排序的rank
      */
-    public static int[] rank(float[] floats) {
+    public static int[] rank(double[] floats) {
         int[] rank = new int[floats.length];
-        float[] f = Arrays.copyOf(floats, floats.length);
+        double[] f = Arrays.copyOf(floats, floats.length);
         Arrays.sort(f);
         for (int i = 0; i < floats.length; i++) {
             for (int j = 0; j < floats.length; j++) {
@@ -140,8 +137,19 @@ public class Utils {
         heroProperties.setProperty("SECRET_KEY",Config.getSecretKey());
         heroProperties.setProperty("ADB_PATH", Config.getAdbPath());
         heroProperties.setProperty("PHOTO_PATH", Config.getPhotoPath());
+        heroProperties.setProperty("NlpAPP_ID", Config.getNlpAppId());
+        heroProperties.setProperty("NlpAPI_KEY", Config.getNlpApiKey());
+        heroProperties.setProperty("NlpSECRET_KEY", Config.getNlpSecretKey());
         heroProperties.store(fileOutputStream, "million hero properties");
         fileOutputStream.close();
+    }
+    public static void loadConfig() throws IOException {
+        InputStream in = new BufferedInputStream(new FileInputStream("hero.properties"));
+        heroProperties.load(in);
+        for (String key : heroProperties.stringPropertyNames()) {
+            Config.set(key, heroProperties.getProperty(key));
+        }
+        in.close();
     }
     public static void initialConfig() throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream("hero.properties", true);
@@ -150,6 +158,9 @@ public class Utils {
         heroProperties.setProperty("APP_ID", "APP_ID");
         heroProperties.setProperty("API_KEY", "API_KEY");
         heroProperties.setProperty("SECRET_KEY", "SECRET_KEY");
+        heroProperties.setProperty("NlpAPP_ID", "NlpAPP_ID");
+        heroProperties.setProperty("NlpAPI_KEY", "NlpAPI_KEY");
+        heroProperties.setProperty("NlpSECRET_KEY", "NlpSECRET_KEY");
         heroProperties.store(fileOutputStream, "million hero properties");
         fileOutputStream.close();
     }

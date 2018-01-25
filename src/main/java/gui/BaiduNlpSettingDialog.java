@@ -1,9 +1,9 @@
 package gui;
 
-import com.baidu.aip.ocr.AipOcr;
-import ocr.impl.BaiDuOCR;
+import com.baidu.aip.nlp.AipNlp;
 import org.apache.log4j.Logger;
 import pojo.Config;
+import similarity.impl.BaiDuSimilarity;
 import utils.Utils;
 
 import javax.swing.*;
@@ -13,11 +13,11 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
- * Created by lingfengsan on 2018/1/19.
+ * Created by 618 on 2018/1/24.
+ *
  * @author lingfengsan
  */
-public class BaiDuOCRSettingDialog {
-
+public class BaiduNlpSettingDialog {
     private static JDialog dialog;
     private static Container dialogPane;
     private static JTextField appIdText;
@@ -26,12 +26,11 @@ public class BaiDuOCRSettingDialog {
     private static Logger logger = Logger.getLogger(BaiDuOCRSettingDialog.class);
 
     /**
-     *
      * @param f 设置OCR界面
      */
-    public BaiDuOCRSettingDialog(JFrame f){
-        dialog = new JDialog(f, "输入",true);
-        dialog.setBounds(20,200,400,220);
+    public BaiduNlpSettingDialog(JFrame f) {
+        dialog = new JDialog(f, "输入", true);
+        dialog.setBounds(20, 200, 400, 220);
         dialog.setLayout(null);
         dialogPane = dialog.getContentPane();
         addAppId();
@@ -48,10 +47,11 @@ public class BaiDuOCRSettingDialog {
         JLabel adbPathLabel = new JLabel("APP_ID：");
         adbPathLabel.setBounds(10, 20, 120, 25);
         dialogPane.add(adbPathLabel);
-        appIdText = new JTextField(Config.getAppId(), 50);
+        appIdText = new JTextField(Config.getNlpAppId(), 50);
         appIdText.setBounds(130, 20, 250, 25);
         dialogPane.add(appIdText);
     }
+
     /**
      * 创建文本域用于用户输入API_KEY
      */
@@ -59,19 +59,19 @@ public class BaiDuOCRSettingDialog {
         JLabel label = new JLabel("API_KEY：");
         label.setBounds(10, 50, 120, 25);
         dialogPane.add(label);
-        apiKeyText = new JTextField(Config.getApiKey(), 50);
+        apiKeyText = new JTextField(Config.getNlpApiKey(), 50);
         apiKeyText.setBounds(130, 50, 250, 25);
         dialogPane.add(apiKeyText);
     }
 
     /**
      * 创建文本域用于用户输入SECRET_KEY
-      */
+     */
     private static void addSecretKey() {
         JLabel label = new JLabel("SECRET_KEY：");
         label.setBounds(10, 80, 120, 25);
         dialogPane.add(label);
-        secretKeyText = new JTextField(Config.getSecretKey(), 50);
+        secretKeyText = new JTextField(Config.getNlpSecretKey(), 50);
         secretKeyText.setBounds(130, 80, 250, 25);
         dialogPane.add(secretKeyText);
     }
@@ -79,24 +79,25 @@ public class BaiDuOCRSettingDialog {
     /**
      * 增加设置完成按钮
      */
-    private static void addSetFinishButton(){
-        final JButton setFinishButton=new JButton("设置完成");
+    private static void addSetFinishButton() {
+        final JButton setFinishButton = new JButton("设置完成");
         setFinishButton.setBounds(160, 110, 100, 25);
         dialogPane.add(setFinishButton);
-        ActionListener listener=new ActionListener() {
+        ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Config.setApiKey(apiKeyText.getText());
-                Config.setAppId(appIdText.getText());
-                Config.setSecretKey(secretKeyText.getText());
+                Config.set("NlpAPP_ID", appIdText.getText());
+                Config.set("NlpAPI_KEY", apiKeyText.getText());
+                Config.set("NlpSECRET_KEY", secretKeyText.getText());
+
                 try {
                     Utils.storeConfig();
-                    AipOcr ocrClient=new AipOcr(Config.getAppId().trim(),
-                            Config.getApiKey().trim(), Config.getSecretKey().trim());
+                    AipNlp nlpClient = new AipNlp(Config.getNlpAppId().trim(),
+                            Config.getNlpApiKey().trim(), Config.getNlpSecretKey().trim());
                     // 可选：设置网络连接参数
-                    ocrClient.setConnectionTimeoutInMillis(2000);
-                    ocrClient.setSocketTimeoutInMillis(60000);
-                    BaiDuOCR.setClient(ocrClient);
+                    nlpClient.setConnectionTimeoutInMillis(2000);
+                    nlpClient.setSocketTimeoutInMillis(60000);
+                    BaiDuSimilarity.setClient(nlpClient);
                 } catch (IOException e1) {
                     logger.error("存储配置失败");
                 }

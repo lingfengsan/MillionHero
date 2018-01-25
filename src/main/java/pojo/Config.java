@@ -2,6 +2,7 @@ package pojo;
 
 /**
  * Created by lingfengsan on 2018/1/22.
+ *
  * @author lingfengsan
  */
 public class Config {
@@ -10,16 +11,28 @@ public class Config {
     private static String APP_ID;
     private static String API_KEY;
     private static String SECRET_KEY;
+    private static String NlpAPP_ID;
+    private static String NlpAPI_KEY;
+    private static String NlpSECRET_KEY;
     private static int searchSelection;
+
+    public static String getNlpAppId() {
+        return NlpAPP_ID;
+    }
+
+    public static String getNlpApiKey() {
+        return NlpAPI_KEY;
+    }
+
+    public static String getNlpSecretKey() {
+        return NlpSECRET_KEY;
+    }
+
+
 
     public static int getSearchSelection() {
         return searchSelection;
     }
-
-    public static void setSearchSelection(int searchSelection) {
-        Config.searchSelection = searchSelection;
-    }
-
 
 
     public static String getAdbPath() {
@@ -73,6 +86,12 @@ public class Config {
             API_KEY = value;
         } else if ("SECRET_KEY".equals(key)) {
             SECRET_KEY = value;
+        } else if ("NlpAPP_ID".equals(key)) {
+            NlpAPP_ID = value;
+        } else if ("NlpAPI_KEY".equals(key)) {
+            NlpAPI_KEY = value;
+        } else if ("NlpSECRET_KEY".equals(key)) {
+            NlpSECRET_KEY = value;
         }
     }
 
