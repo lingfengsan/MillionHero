@@ -1,4 +1,5 @@
 import gui.BaiDuOCRSettingDialog;
+import gui.BaiduNlpSettingDialog;
 import ocr.OCR;
 import ocr.impl.OCRFactory;
 import org.apache.log4j.Logger;
@@ -10,7 +11,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.Properties;
 
 /**
  * Created by lingfengsan on 2018/1/16.
@@ -25,24 +25,23 @@ public class MainGUI {
     private static ButtonGroup ocrSelectionButton = new ButtonGroup();
     private static ButtonGroup searchSelectionButton = new ButtonGroup();
     private static ButtonGroup patternSelectionButton = new ButtonGroup();
-    private static int ocrSelection = 1;
+    private static ButtonGroup similaritySelectionButton = new ButtonGroup();
     private static int patternSelection = 1;
     private static int searchSelection = 1;
     private static JTextArea resultTextArea;
     private static JFrame frame = new JFrame("答题助手");
     private static final CommonPattern COMMON_PATTERN = new CommonPattern();
-    private static Properties heroProperties = new Properties();
 
     public static void main(String[] args) throws IOException {
         // Setting the width and height of frame
         frame.setSize(500, 800);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         try{
-            loadConfig();
+            Utils.loadConfig();
         }catch (Exception e){
-            initConfig();
+            Utils.initialConfig();
         }
-        loadConfig();
+        Utils.loadConfig();
 //        创建面板
         JPanel panel = new JPanel();
         frame.add(panel);
@@ -53,6 +52,7 @@ public class MainGUI {
         addSearchSelection(panel);
         addSetFinishButton(panel);
         addRunButton(panel);
+        addSimilaritySelection(panel);
         addResultTextArea(panel);
         addPatternSelection(panel);
         // 设置界面可见
@@ -64,7 +64,7 @@ public class MainGUI {
         JLabel adbPathLabel = new JLabel("adb路径：");
         adbPathLabel.setBounds(10, 20, 100, 25);
         panel.add(adbPathLabel);
-        adbPathText = new JTextField(heroProperties.getProperty("ADB_PATH"), 30);
+        adbPathText = new JTextField(Config.getAdbPath(), 30);
         adbPathText.setBounds(100, 20, 100, 25);
         panel.add(adbPathText);
     }
@@ -74,12 +74,15 @@ public class MainGUI {
         JLabel imagePathLabel = new JLabel("图片存放路径：");
         imagePathLabel.setBounds(10, 45, 100, 25);
         panel.add(imagePathLabel);
-        imagePathText = new JTextField(heroProperties.getProperty("PHOTO_PATH"), 30);
+        imagePathText = new JTextField(Config.getPhotoPath(), 30);
         imagePathText.setBounds(100, 45, 100, 25);
         panel.add(imagePathText);
     }
 
-    //         创建OCR选择
+    /**
+     * 创建OCR选择
+     * @param panel 创建OCR选择
+     */
     private static void addOCRSelection(JPanel panel) {
         JLabel ocrSelectionLabel = new JLabel("OCR方式：");
         ocrSelectionLabel.setBounds(10, 70, 100, 25);
@@ -88,26 +91,55 @@ public class MainGUI {
         panel.add(ocrSelectionLabel);
     }
 
-    private static void addOCRSelection(JPanel panel, int X, String text, final int selection) {
+    private static void addOCRSelection(JPanel panel, int x, String text, final int selection) {
         final JRadioButton ocrButton = new JRadioButton(text);
-        ocrButton.setBounds(X, 70, 165, 25);
+        ocrButton.setBounds(x, 70, 165, 25);
         ocrSelectionButton.add(ocrButton);
         panel.add(ocrButton);
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ocrSelection = selection;
                 if (selection == 2) {
                     new BaiDuOCRSettingDialog(frame);
                 }
-                OCR ocr = OCR_FACTORY.getOcr(ocrSelection);
+                OCR ocr = OCR_FACTORY.getOcr(selection);
                 COMMON_PATTERN.setOcr(ocr);
             }
         };
         ocrButton.addActionListener(listener);
     }
+    /**
+     * 创建相似度选择
+     * @param panel 创建相似度选择
+     */
+    private static void addSimilaritySelection(JPanel panel) {
+        JLabel similaritySelectionLabel = new JLabel("相似度方式：");
+        similaritySelectionLabel.setBounds(10, 145, 100, 25);
+        addSimilaritySelection(panel, 100, "PMI", 1);
+        addSimilaritySelection(panel, 300, "百度Nlp", 2);
+        panel.add(similaritySelectionLabel);
+    }
 
-    //         创建搜索选择
+    private static void addSimilaritySelection(JPanel panel, int x, String text, final int selection) {
+        final JRadioButton jRadioButton = new JRadioButton(text);
+        jRadioButton.setBounds(x, 145, 165, 25);
+        similaritySelectionButton.add(jRadioButton);
+        panel.add(jRadioButton);
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selection == 2) {
+                    new BaiduNlpSettingDialog(frame);
+                }
+            }
+        };
+        jRadioButton.addActionListener(listener);
+    }
+
+    /**
+     *
+     * @param panel 创建搜索选择
+     */
     private static void addSearchSelection(JPanel panel) {
         JLabel searchSelectionLabel = new JLabel("搜索方式：");
         searchSelectionLabel.setBounds(10, 95, 100, 25);
@@ -116,9 +148,9 @@ public class MainGUI {
         panel.add(searchSelectionLabel);
     }
 
-    private static void addSearchSelection(JPanel panel, int X, String text, final int selection) {
+    private static void addSearchSelection(JPanel panel, int x, String text, final int selection) {
         final JRadioButton searchButton = new JRadioButton(text);
-        searchButton.setBounds(X, 95, 165, 25);
+        searchButton.setBounds(x, 95, 165, 25);
         searchSelectionButton.add(searchButton);
         panel.add(searchButton);
         ActionListener listener = new ActionListener() {
@@ -130,7 +162,10 @@ public class MainGUI {
         searchButton.addActionListener(listener);
     }
 
-    //         创建模式选择
+    /**
+     *
+     * @param panel 创建模式选择
+     */
     private static void addPatternSelection(JPanel panel) {
         JLabel patternSelectionLabel = new JLabel("游戏模式：");
         patternSelectionLabel.setBounds(10, 120, 100, 25);
@@ -139,9 +174,9 @@ public class MainGUI {
         panel.add(patternSelectionLabel);
     }
 
-    private static void addPatternSelection(JPanel panel, int X, String text, final int selection) {
+    private static void addPatternSelection(JPanel panel, int x, String text, final int selection) {
         final JRadioButton patternButton = new JRadioButton(text);
-        patternButton.setBounds(X, 120, 165, 25);
+        patternButton.setBounds(x, 120, 165, 25);
         patternSelectionButton.add(patternButton);
         panel.add(patternButton);
         ActionListener listener = new ActionListener() {
@@ -153,16 +188,24 @@ public class MainGUI {
         patternButton.addActionListener(listener);
     }
 
-    //增加设置完成按钮
+    /**
+     *
+     * @param panel 增加设置完成按钮
+     */
     private static void addSetFinishButton(JPanel panel) {
         final JButton setFinishButton = new JButton("设置完成");
-        setFinishButton.setBounds(40, 145, 120, 25);
+        setFinishButton.setBounds(40, 170, 120, 25);
         panel.add(setFinishButton);
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Config.setAdbPath(adbPathText.getText());
                 Config.setPhotoPath(imagePathText.getText());
+                try {
+                    Utils.storeConfig();
+                } catch (IOException e1) {
+                    logger.error("存储配置信息失败");
+                }
                 Utils utils = new Utils(Config.getAdbPath(), Config.getPhotoPath());
                 COMMON_PATTERN.setUtils(utils);
                 COMMON_PATTERN.setPatterSelection(patternSelection);
@@ -172,10 +215,13 @@ public class MainGUI {
         setFinishButton.addActionListener(listener);
     }
 
-    //增加获取答案按钮
+    /**
+     *
+     * @param panel 增加获取答案按钮
+     */
     private static void addRunButton(JPanel panel) {
         final JButton runButton = new JButton("获取答案");
-        runButton.setBounds(160, 145, 120, 25);
+        runButton.setBounds(160, 170, 120, 25);
         panel.add(runButton);
         ActionListener listener = new ActionListener() {
             @Override
@@ -192,33 +238,18 @@ public class MainGUI {
         runButton.addActionListener(listener);
     }
 
-    //         创建图片存放路径
+    /**
+     *
+     * @param panel 创建图片存放路径
+     */
     private static void addResultTextArea(JPanel panel) {
         resultTextArea = new JTextArea();
-        resultTextArea.setBounds(10, 170, 400, 400);
+        resultTextArea.setBounds(10, 195, 400, 400);
         panel.add(resultTextArea);
     }
 
-    private static void initConfig() throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream("hero.properties", true);
-        heroProperties.setProperty("ADB_PATH", "D:\\adb\\adb");
-        heroProperties.setProperty("PHOTO_PATH", "D:\\Photo");
-        heroProperties.setProperty("APP_ID", "APP_ID");
-        heroProperties.setProperty("API_KEY", "API_KEY");
-        heroProperties.setProperty("SECRET_KEY", "SECRET_KEY");
-        heroProperties.store(fileOutputStream, "million hero properties");
-        fileOutputStream.close();
-    }
 
-    private static void loadConfig() throws IOException {
-        InputStream in = new BufferedInputStream(new FileInputStream("hero.properties"));
-        heroProperties.load(in);
-        for (String key : heroProperties.stringPropertyNames()) {
-            System.out.println(key+":"+heroProperties.getProperty(key));
-            Config.set(key, heroProperties.getProperty(key));
-        }
-        in.close();
-    }
+
 
 
 }
