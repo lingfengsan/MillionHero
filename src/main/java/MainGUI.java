@@ -86,8 +86,7 @@ public class MainGUI {
     private static void addOCRSelection(JPanel panel) {
         JLabel ocrSelectionLabel = new JLabel("OCR方式：");
         ocrSelectionLabel.setBounds(10, 70, 100, 25);
-        addOCRSelection(panel, 100, "TessOCR", 1);
-        addOCRSelection(panel, 300, "BaiDuOCR", 2);
+        addOCRSelection(panel, 100, "BaiDuOCR", 2);
         panel.add(ocrSelectionLabel);
     }
 
