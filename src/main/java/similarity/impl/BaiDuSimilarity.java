@@ -2,7 +2,6 @@ package similarity.impl;
 
 import com.baidu.aip.nlp.AipNlp;
 import org.json.JSONObject;
-import pojo.NlpConfig;
 import similarity.Similarity;
 
 import java.util.HashMap;

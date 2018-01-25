@@ -11,7 +11,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.Properties;
 
 /**
  * Created by lingfengsan on 2018/1/16.
@@ -32,7 +31,6 @@ public class MainGUI {
     private static JTextArea resultTextArea;
     private static JFrame frame = new JFrame("答题助手");
     private static final CommonPattern COMMON_PATTERN = new CommonPattern();
-    private static Properties heroProperties = new Properties();
 
     public static void main(String[] args) throws IOException {
         // Setting the width and height of frame
@@ -66,7 +64,7 @@ public class MainGUI {
         JLabel adbPathLabel = new JLabel("adb路径：");
         adbPathLabel.setBounds(10, 20, 100, 25);
         panel.add(adbPathLabel);
-        adbPathText = new JTextField(heroProperties.getProperty("ADB_PATH"), 30);
+        adbPathText = new JTextField(Config.getAdbPath(), 30);
         adbPathText.setBounds(100, 20, 100, 25);
         panel.add(adbPathText);
     }
@@ -76,7 +74,7 @@ public class MainGUI {
         JLabel imagePathLabel = new JLabel("图片存放路径：");
         imagePathLabel.setBounds(10, 45, 100, 25);
         panel.add(imagePathLabel);
-        imagePathText = new JTextField(heroProperties.getProperty("PHOTO_PATH"), 30);
+        imagePathText = new JTextField(Config.getPhotoPath(), 30);
         imagePathText.setBounds(100, 45, 100, 25);
         panel.add(imagePathText);
     }
