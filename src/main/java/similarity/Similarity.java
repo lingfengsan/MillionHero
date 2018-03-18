@@ -7,5 +7,5 @@ import java.util.concurrent.Callable;
  *
  * @author lingfengsan
  */
-public interface Similarity extends Callable{
+public interface Similarity extends Callable<Double>{
 }
