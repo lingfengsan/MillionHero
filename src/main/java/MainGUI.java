@@ -58,8 +58,10 @@ public class MainGUI {
         // 设置界面可见
         frame.setVisible(true);
     }
-
-    //    创建文本域用于用户输入adb路径
+    /**
+     *
+     * @param panel 创建文本域用于用户输入adb路径
+     */
     private static void addAdbPath(JPanel panel) {
         JLabel adbPathLabel = new JLabel("adb路径：");
         adbPathLabel.setBounds(10, 20, 100, 25);
@@ -69,7 +71,10 @@ public class MainGUI {
         panel.add(adbPathText);
     }
 
-    //         创建图片存放路径
+    /**
+     *
+     * @param panel 创建图片存放路径
+     */
     private static void addImagePath(JPanel panel) {
         JLabel imagePathLabel = new JLabel("图片存放路径：");
         imagePathLabel.setBounds(10, 45, 100, 25);
