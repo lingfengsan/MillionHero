@@ -2,7 +2,7 @@ package ocr.impl;
 
 import com.baidu.aip.ocr.AipOcr;
 import exception.NoRemainingException;
-import ocr.OCR;
+import ocr.Ocr;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pojo.Config;
@@ -16,11 +16,11 @@ import java.util.HashMap;
  * Created by 618 on 2018/1/12.
  * @author lingfengsan
  */
-public class BaiDuOCR implements OCR{
+public class BaiDuOcr implements Ocr {
     private static AipOcr client;
-
+    private final String ERROR_MSG="error_msg";
     public static void setClient(AipOcr client) {
-        BaiDuOCR.client = client;
+        BaiDuOcr.client = client;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class BaiDuOCR implements OCR{
         // 调用接口
         JSONObject res = client.basicGeneral(path, new HashMap<String, String>());
         String searchResult=res.toString();
-        if(searchResult.contains("error_msg")){
+        if(searchResult.contains(ERROR_MSG)){
             try {
                 throw new NoRemainingException("OCR可使用次数不足");
             } catch (NoRemainingException e) {
@@ -58,7 +58,7 @@ public class BaiDuOCR implements OCR{
     }
 
     public static void main(String[] args) throws IOException {
-        OCR ocr=new BaiDuOCR();
+        Ocr ocr=new BaiDuOcr();
         Utils.loadConfig();
         client=new AipOcr(Config.getAppId().trim(),
                 Config.getApiKey().trim(), Config.getSecretKey().trim());

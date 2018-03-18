@@ -2,7 +2,7 @@ package pattern.impl;
 
 import com.baidu.aip.nlp.AipNlp;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import ocr.OCR;
+import ocr.Ocr;
 import pattern.Pattern;
 import search.impl.SearchFactory;
 import similarity.Similarity;
@@ -31,10 +31,10 @@ public class CommonPattern implements Pattern {
     private SearchFactory searchFactory = new SearchFactory();
     private int patterSelection;
     private int searchSelection;
-    private OCR ocr;
+    private Ocr ocr;
     private Utils utils;
     private ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
-            .setNameFormat("similarity").build();
+            .setNameFormat("search").build();
 
     private ExecutorService pools = new ThreadPoolExecutor(7, 12,
             0L, TimeUnit.MILLISECONDS,
@@ -49,7 +49,7 @@ public class CommonPattern implements Pattern {
         this.searchSelection = searchSelection;
     }
 
-    public void setOcr(OCR ocr) {
+    public void setOcr(Ocr ocr) {
         this.ocr = ocr;
     }
 

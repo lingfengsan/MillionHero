@@ -1,7 +1,7 @@
-import gui.BaiDuOCRSettingDialog;
+import gui.BaiDuOcrSettingDialog;
 import gui.BaiduNlpSettingDialog;
-import ocr.OCR;
-import ocr.impl.OCRFactory;
+import ocr.Ocr;
+import ocr.impl.OcrFactory;
 import org.apache.log4j.Logger;
 import pattern.impl.CommonPattern;
 import pojo.Config;
@@ -19,7 +19,7 @@ import java.io.*;
  */
 public class MainGUI {
     private static Logger logger = Logger.getLogger(MainGUI.class);
-    private static final OCRFactory OCR_FACTORY = new OCRFactory();
+    private static final OcrFactory OCR_FACTORY = new OcrFactory();
     private static JTextField adbPathText;
     private static JTextField imagePathText;
     private static ButtonGroup ocrSelectionButton = new ButtonGroup();
@@ -86,8 +86,8 @@ public class MainGUI {
     private static void addOCRSelection(JPanel panel) {
         JLabel ocrSelectionLabel = new JLabel("OCR方式：");
         ocrSelectionLabel.setBounds(10, 70, 100, 25);
-        addOCRSelection(panel, 100, "TessOCR", 1);
-        addOCRSelection(panel, 300, "BaiDuOCR", 2);
+        addOCRSelection(panel, 100, "TessOcr", 1);
+        addOCRSelection(panel, 300, "BaiDuOcr", 2);
         panel.add(ocrSelectionLabel);
     }
 
@@ -100,9 +100,9 @@ public class MainGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selection == 2) {
-                    new BaiDuOCRSettingDialog(frame);
+                    new BaiDuOcrSettingDialog(frame);
                 }
-                OCR ocr = OCR_FACTORY.getOcr(selection);
+                Ocr ocr = OCR_FACTORY.getOcr(selection);
                 COMMON_PATTERN.setOcr(ocr);
             }
         };

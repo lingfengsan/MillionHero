@@ -23,7 +23,7 @@ public class BaiduNlpSettingDialog {
     private static JTextField appIdText;
     private static JTextField apiKeyText;
     private static JTextField secretKeyText;
-    private static Logger logger = Logger.getLogger(BaiDuOCRSettingDialog.class);
+    private static Logger logger = Logger.getLogger(BaiDuOcrSettingDialog.class);
 
     /**
      * @param f 设置OCR界面

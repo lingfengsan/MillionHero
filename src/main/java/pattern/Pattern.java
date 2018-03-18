@@ -7,5 +7,10 @@ import java.io.UnsupportedEncodingException;
  * @author lingfengsan
  */
 public interface Pattern {
+    /**
+     *
+     * @return 返回运行得到的结果
+     * @throws UnsupportedEncodingException 不支持的编码异常
+     */
     String run() throws UnsupportedEncodingException;
 }

@@ -1,7 +1,7 @@
 package gui;
 
 import com.baidu.aip.ocr.AipOcr;
-import ocr.impl.BaiDuOCR;
+import ocr.impl.BaiDuOcr;
 import org.apache.log4j.Logger;
 import pojo.Config;
 import utils.Utils;
@@ -16,20 +16,20 @@ import java.io.IOException;
  * Created by lingfengsan on 2018/1/19.
  * @author lingfengsan
  */
-public class BaiDuOCRSettingDialog {
+public class BaiDuOcrSettingDialog {
 
     private static JDialog dialog;
     private static Container dialogPane;
     private static JTextField appIdText;
     private static JTextField apiKeyText;
     private static JTextField secretKeyText;
-    private static Logger logger = Logger.getLogger(BaiDuOCRSettingDialog.class);
+    private static Logger logger = Logger.getLogger(BaiDuOcrSettingDialog.class);
 
     /**
      *
      * @param f 设置OCR界面
      */
-    public BaiDuOCRSettingDialog(JFrame f){
+    public BaiDuOcrSettingDialog(JFrame f){
         dialog = new JDialog(f, "输入",true);
         dialog.setBounds(20,200,400,220);
         dialog.setLayout(null);
@@ -96,7 +96,7 @@ public class BaiDuOCRSettingDialog {
                     // 可选：设置网络连接参数
                     ocrClient.setConnectionTimeoutInMillis(2000);
                     ocrClient.setSocketTimeoutInMillis(60000);
-                    BaiDuOCR.setClient(ocrClient);
+                    BaiDuOcr.setClient(ocrClient);
                 } catch (IOException e1) {
                     logger.error("存储配置失败");
                 }

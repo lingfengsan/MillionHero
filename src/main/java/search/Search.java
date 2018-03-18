@@ -10,5 +10,10 @@ import java.util.concurrent.Callable;
  * @author lingfengsan
  */
 public interface Search extends Callable<Long> {
+    /**
+     *
+     * @return 返回得到查到的搜索数量
+     * @throws IOException IO异常
+     */
     Long search() throws IOException;
 }
