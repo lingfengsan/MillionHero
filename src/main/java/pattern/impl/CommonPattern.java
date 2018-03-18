@@ -10,8 +10,7 @@ import utils.Utils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 
 /**
  * Created by lingfengsan on 2018/1/18.
@@ -20,24 +19,25 @@ import java.util.concurrent.FutureTask;
  */
 public class CommonPattern implements Pattern {
     private static final String QUESTION_FLAG = "?";
-    private static int[] startX = {100,100, 80};
-    private static int[] startY = {300,300, 300};
-    private static int[] width = {900,900, 900};
-    private static int[] height = {900,900, 700};
+    private static int[] startX = {100, 100, 80};
+    private static int[] startY = {300, 300, 300};
+    private static int[] width = {900, 900, 900};
+    private static int[] height = {900, 900, 700};
     private ImageHelper imageHelper = new ImageHelper();
-    private SearchFactory searchFactory=new SearchFactory();
+    private SearchFactory searchFactory = new SearchFactory();
     private int patterSelection;
     private int searchSelection;
     private OCR ocr;
     private Utils utils;
+    private ExecutorService pool = Executors.newFixedThreadPool(7);
 
     public void setPatterSelection(int patterSelection) {
-        switch (patterSelection){
-            case 2:{
+        switch (patterSelection) {
+            case 2: {
                 System.out.println("欢迎进入冲顶大会");
                 break;
             }
-            default:{
+            default: {
                 System.out.println("欢迎进入百万英雄");
                 break;
             }
@@ -46,12 +46,12 @@ public class CommonPattern implements Pattern {
     }
 
     public void setSearchSelection(int searchSelection) {
-        switch (searchSelection){
-            case 2:{
+        switch (searchSelection) {
+            case 2: {
                 System.out.println("欢迎使用搜狗搜索");
                 break;
             }
-            default:{
+            default: {
                 System.out.println("欢迎使用百度搜索");
                 break;
             }
@@ -68,7 +68,6 @@ public class CommonPattern implements Pattern {
     }
 
 
-
     @Override
     public String run() throws UnsupportedEncodingException {
         //       记录开始时间
@@ -82,7 +81,7 @@ public class CommonPattern implements Pattern {
         System.out.println("图片获取成功");
         //裁剪图片
         imageHelper.cutImage(imagePath, imagePath,
-                startX[patterSelection],startY[patterSelection], width[patterSelection], height[patterSelection]);
+                startX[patterSelection], startY[patterSelection], width[patterSelection], height[patterSelection]);
         //图像识别
         Long beginOfDetect = System.currentTimeMillis();
         String questionAndAnswers = ocr.getOCR(new File(imagePath));
@@ -122,20 +121,23 @@ public class CommonPattern implements Pattern {
         FutureTask[] futureQuestion = new FutureTask[1];
         FutureTask[] futureQA = new FutureTask[numOfAnswer];
         FutureTask[] futureAnswers = new FutureTask[numOfAnswer];
-
-        futureQuestion[0]=new FutureTask<Long>(searchFactory.getSearch(searchSelection,question,true));
-        new Thread(futureQuestion[0]).start();
+        futureQuestion[0] = new FutureTask<Long>(searchFactory.getSearch(searchSelection, question, true));
+        pool.execute(futureQuestion[0]);
         for (int i = 0; i < numOfAnswer; i++) {
-            searchQA[i] = searchFactory.getSearch(searchSelection,(question + " " + answers[i]),false);
-            searchAnswers[i] = searchFactory.getSearch(searchSelection,answers[i],false);
+            searchQA[i] = searchFactory.getSearch(searchSelection, (question + " " + answers[i]), false);
+            searchAnswers[i] = searchFactory.getSearch(searchSelection, answers[i], false);
 
             futureQA[i] = new FutureTask<Long>(searchQA[i]);
             futureAnswers[i] = new FutureTask<Long>(searchAnswers[i]);
-            new Thread(futureQA[i]).start();
-            new Thread(futureAnswers[i]).start();
+            pool.execute(futureQA[i]);
+            pool.execute(futureAnswers[i]);
         }
         try {
-            while (!futureQuestion[0].isDone()) {
+
+            while (true) {
+                if (futureQuestion[0].isDone()) {
+                    break;
+                }
             }
             countQuestion = (Long) futureQuestion[0].get();
             for (int i = 0; i < numOfAnswer; i++) {
