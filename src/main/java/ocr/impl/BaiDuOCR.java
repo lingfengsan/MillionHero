@@ -6,8 +6,10 @@ import ocr.OCR;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pojo.Config;
+import utils.Utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -15,13 +17,12 @@ import java.util.HashMap;
  * @author lingfengsan
  */
 public class BaiDuOCR implements OCR{
-    //设置APPID/AK/SK
-    private static AipOcr CLIENT=new AipOcr(Config.getAppId().trim(), Config.getApiKey().trim(), Config.getSecretKey().trim());
-    BaiDuOCR(){
-        // 可选：设置网络连接参数
-        CLIENT.setConnectionTimeoutInMillis(2000);
-        CLIENT.setSocketTimeoutInMillis(60000);
+    private static AipOcr client;
+
+    public static void setClient(AipOcr client) {
+        BaiDuOCR.client = client;
     }
+
     @Override
     public String getOCR(File file) {
         System.out.println(Config.getAppId());
@@ -30,7 +31,7 @@ public class BaiDuOCR implements OCR{
         Long start=System.currentTimeMillis();
         String path=file.getAbsolutePath();
         // 调用接口
-        JSONObject res = CLIENT.basicGeneral(path, new HashMap<String, String>());
+        JSONObject res = client.basicGeneral(path, new HashMap<String, String>());
         String searchResult=res.toString();
         if(searchResult.contains("error_msg")){
             try {
@@ -56,10 +57,15 @@ public class BaiDuOCR implements OCR{
         return sb.toString();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         OCR ocr=new BaiDuOCR();
-        String path = "D:\\Photo\\20180114002647.png";
+        Utils.loadConfig();
+        client=new AipOcr(Config.getAppId().trim(),
+                Config.getApiKey().trim(), Config.getSecretKey().trim());
+        String path = "D:\\Photo\\123.png";
         String result=ocr.getOCR(new File(path));
         System.out.println(result);
     }
+
+
 }
