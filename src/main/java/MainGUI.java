@@ -1,7 +1,7 @@
-import gui.BaiDuOCRSettingDialog;
+import gui.BaiDuOcrSettingDialog;
 import gui.BaiduNlpSettingDialog;
-import ocr.OCR;
-import ocr.impl.OCRFactory;
+import ocr.Ocr;
+import ocr.impl.OcrFactory;
 import org.apache.log4j.Logger;
 import pattern.impl.CommonPattern;
 import pojo.Config;
@@ -19,7 +19,7 @@ import java.io.*;
  */
 public class MainGUI {
     private static Logger logger = Logger.getLogger(MainGUI.class);
-    private static final OCRFactory OCR_FACTORY = new OCRFactory();
+    private static final OcrFactory OCR_FACTORY = new OcrFactory();
     private static JTextField adbPathText;
     private static JTextField imagePathText;
     private static ButtonGroup ocrSelectionButton = new ButtonGroup();
@@ -58,8 +58,10 @@ public class MainGUI {
         // 设置界面可见
         frame.setVisible(true);
     }
-
-    //    创建文本域用于用户输入adb路径
+    /**
+     *
+     * @param panel 创建文本域用于用户输入adb路径
+     */
     private static void addAdbPath(JPanel panel) {
         JLabel adbPathLabel = new JLabel("adb路径：");
         adbPathLabel.setBounds(10, 20, 100, 25);
@@ -69,7 +71,10 @@ public class MainGUI {
         panel.add(adbPathText);
     }
 
-    //         创建图片存放路径
+    /**
+     *
+     * @param panel 创建图片存放路径
+     */
     private static void addImagePath(JPanel panel) {
         JLabel imagePathLabel = new JLabel("图片存放路径：");
         imagePathLabel.setBounds(10, 45, 100, 25);
@@ -86,7 +91,8 @@ public class MainGUI {
     private static void addOCRSelection(JPanel panel) {
         JLabel ocrSelectionLabel = new JLabel("OCR方式：");
         ocrSelectionLabel.setBounds(10, 70, 100, 25);
-        addOCRSelection(panel, 100, "BaiDuOCR", 2);
+        addOCRSelection(panel, 100, "TessOcr", 1);
+        addOCRSelection(panel, 300, "BaiDuOcr", 2);
         panel.add(ocrSelectionLabel);
     }
 
@@ -99,9 +105,9 @@ public class MainGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selection == 2) {
-                    new BaiDuOCRSettingDialog(frame);
+                    new BaiDuOcrSettingDialog(frame);
                 }
-                OCR ocr = OCR_FACTORY.getOcr(selection);
+                Ocr ocr = OCR_FACTORY.getOcr(selection);
                 COMMON_PATTERN.setOcr(ocr);
             }
         };

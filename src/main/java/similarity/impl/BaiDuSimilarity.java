@@ -12,9 +12,6 @@ import java.util.HashMap;
  * @author lingfengsan
  */
 public class BaiDuSimilarity implements Similarity {
-    //设置APPID/AK/SK
-//    private AipNlp client = new AipNlp(NlpConfig.getAppId(),
-//            NlpConfig.getApiKey(),NlpConfig.getSecretKey());
     private static AipNlp client;
     private String question;
     private String answer;

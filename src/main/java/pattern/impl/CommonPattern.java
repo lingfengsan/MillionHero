@@ -1,7 +1,8 @@
 package pattern.impl;
 
 import com.baidu.aip.nlp.AipNlp;
-import ocr.OCR;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import ocr.Ocr;
 import pattern.Pattern;
 import search.impl.SearchFactory;
 import similarity.Similarity;
@@ -13,8 +14,7 @@ import utils.Utils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 
 /**
  * Created by lingfengsan on 2018/1/18.
@@ -23,16 +23,23 @@ import java.util.concurrent.FutureTask;
  */
 public class CommonPattern implements Pattern {
     private static final String QUESTION_FLAG = "?";
-    private static int[] startX = {100,100, 80};
-    private static int[] startY = {300,300, 300};
-    private static int[] width = {900,900, 900};
-    private static int[] height = {900,900, 700};
+    private static int[] startX = {100, 100, 80};
+    private static int[] startY = {300, 300, 300};
+    private static int[] width = {900, 900, 900};
+    private static int[] height = {900, 900, 700};
     private ImageHelper imageHelper = new ImageHelper();
-    private SearchFactory searchFactory=new SearchFactory();
+    private SearchFactory searchFactory = new SearchFactory();
     private int patterSelection;
     private int searchSelection;
-    private OCR ocr;
+    private Ocr ocr;
     private Utils utils;
+    private ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
+            .setNameFormat("search").build();
+
+    private ExecutorService pools = new ThreadPoolExecutor(7, 12,
+            0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+
 
     public void setPatterSelection(int patterSelection) {
         this.patterSelection = patterSelection;
@@ -42,14 +49,13 @@ public class CommonPattern implements Pattern {
         this.searchSelection = searchSelection;
     }
 
-    public void setOcr(OCR ocr) {
+    public void setOcr(Ocr ocr) {
         this.ocr = ocr;
     }
 
     public void setUtils(Utils utils) {
         this.utils = utils;
     }
-
 
 
     @Override
@@ -65,7 +71,7 @@ public class CommonPattern implements Pattern {
         System.out.println("图片获取成功");
         //裁剪图片
         imageHelper.cutImage(imagePath, imagePath,
-                startX[patterSelection],startY[patterSelection], width[patterSelection], height[patterSelection]);
+                startX[patterSelection], startY[patterSelection], width[patterSelection], height[patterSelection]);
         //图像识别
         Long beginOfDetect = System.currentTimeMillis();
         String questionAndAnswers = ocr.getOCR(new File(imagePath));
@@ -95,24 +101,24 @@ public class CommonPattern implements Pattern {
         }
         //求相关性
         int numOfAnswer = answers.length > 3 ? 4 : answers.length;
-        double[] result=new double[numOfAnswer];
-        Similarity[] similarities= new Similarity[numOfAnswer];
-        FutureTask[] futureTasks=new FutureTask[numOfAnswer];
-        BaiDuSimilarity.setClient(new AipNlp("10732092","pdAtmzlooEbrcfYG4l0kIluf",
+        double[] result = new double[numOfAnswer];
+        Similarity[] similarities = new Similarity[numOfAnswer];
+        FutureTask[] futureTasks = new FutureTask[numOfAnswer];
+        BaiDuSimilarity.setClient(new AipNlp("10732092", "pdAtmzlooEbrcfYG4l0kIluf",
                 "sHjPBnKt58crPuFogTgQ5Wki0TrHYO2c"));
         for (int i = 0; i < numOfAnswer; i++) {
-            similarities[i]=SimilarityFactory.getSimlarity(2,question,answers[i]);
-            futureTasks[i]=new FutureTask<Double>(similarities[i]);
-            new Thread(futureTasks[i]).start();
+            similarities[i] = SimilarityFactory.getSimlarity(2, question, answers[i]);
+            futureTasks[i] = new FutureTask<Double>(similarities[i]);
+            pools.execute(futureTasks[i]);
         }
         for (int i = 0; i < numOfAnswer; i++) {
-            while (true){
-                if(futureTasks[i].isDone()){
+            while (true) {
+                if (futureTasks[i].isDone()) {
                     break;
                 }
             }
             try {
-                result[i]=  (Double) futureTasks[i].get();
+                result[i] = (Double) futureTasks[i].get();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -122,8 +128,8 @@ public class CommonPattern implements Pattern {
         //搜索
 
         FutureTask[] futureQuestion = new FutureTask[1];
-        futureQuestion[0]=new FutureTask<Long>(searchFactory.getSearch(searchSelection,question,true));
-        new Thread(futureQuestion[0]).start();
+        futureQuestion[0] = new FutureTask<Long>(searchFactory.getSearch(searchSelection, question, true));
+        pools.execute(futureQuestion[0]);
 
 
         //根据pmi值进行打印搜索结果
@@ -134,7 +140,7 @@ public class CommonPattern implements Pattern {
         }
 
         sb.append("--------最终结果-------\n");
-        sb.append(answers[rank[rank.length-1]]);
+        sb.append(answers[rank[rank.length - 1]]);
         endTime = System.currentTimeMillis();
         float excTime = (float) (endTime - startTime) / 1000;
 
